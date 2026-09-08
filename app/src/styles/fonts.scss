@@ -1,0 +1,74 @@
+/*
+** Dynamic font loading system using @ids fonts with environment-specific URLs
+** Extracts fonts from node_modules/@ids/styles/scss/fonts at build time
+*/
+
+// Import environment SCSS variables para URL dinâmica
+@import "style.scss";
+@import "../_webcomponent-name.scss";
+
+// Font-face definitions com namespace dinâmico baseado no webcomponent
+@font-face {
+  font-display: swap;
+  font-family: "Itau Icon #{$webcomponent-wrapper-name}"; // Nome único por webcomponent
+  src: url("#{$fontBaseUrl}/Ids_Itau_Icons.woff2") format("woff2");
+  src: url("#{$fontBaseUrl}/Ids_Itau_Icons.woff") format("woff");
+  src: url("#{$fontBaseUrl}/Ids_Itau_Icons.svg") format("svg");
+  src: url("#{$fontBaseUrl}/Ids_Itau_Icons.ttf") format("truetype");
+  src: url("#{$fontBaseUrl}/Ids_Itau_Icons.eot") format("embedded-opentype");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "itau-icon-#{$webcomponent-wrapper-name}"; // Versão sem espaços
+  src: url("#{$fontBaseUrl}/Ids_Itau_Icons.woff2") format("woff2");
+  src: url("#{$fontBaseUrl}/Ids_Itau_Icons.woff") format("woff");
+  src: url("#{$fontBaseUrl}/Ids_Itau_Icons.svg") format("svg");
+  src: url("#{$fontBaseUrl}/Ids_Itau_Icons.ttf") format("ttf");
+  src: url("#{$fontBaseUrl}/Ids_Itau_Icons.eot") format("eot");
+}
+
+/// Text
+
+@font-face {
+  font-display: swap;
+  font-family: "Itau Text";
+  font-style: "light";
+  font-weight: 200;
+  src: url("#{$fontBaseUrl}/ItauTextPro_Lt.ttf") format("ttf");
+  src: url("#{$fontBaseUrl}/ItauTextPro_Lt.eot") format("eot");
+  src: url("#{$fontBaseUrl}/ItauTextPro_Lt.woff") format("woff");
+  src: url("#{$fontBaseUrl}/ItauTextPro_Lt.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Itau Text";
+  font-style: "regular";
+  font-weight: 400;
+  src: url("#{$fontBaseUrl}/ItauTextPro_Rg.ttf") format("ttf");
+  src: url("#{$fontBaseUrl}/ItauTextPro_Rg.eot") format("eot");
+  src: url("#{$fontBaseUrl}/ItauTextPro_Rg.woff") format("woff");
+  src: url("#{$fontBaseUrl}/ItauTextPro_Rg.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Itau Text";
+  font-style: "bold";
+  font-weight: 700;
+  src: url("#{$fontBaseUrl}/ItauTextPro_Bd.ttf") format("ttf");
+  src: url("#{$fontBaseUrl}/ItauTextPro_Bd.eot") format("eot");
+  src: url("#{$fontBaseUrl}/ItauTextPro_Bd.woff") format("woff");
+  src: url("#{$fontBaseUrl}/ItauTextPro_Bd.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "Itau Text";
+  font-style: "xbold";
+  font-weight: 900;
+  src: url("#{$fontBaseUrl}/ItauTextPro_XBd.ttf") format("ttf");
+  src: url("#{$fontBaseUrl}/ItauTextPro_XBd.eot") format("eot");
+  src: url("#{$fontBaseUrl}/ItauTextPro_XBd.woff") format("woff");
+  src: url("#{$fontBaseUrl}/ItauTextPro_XBd.woff2") format("woff2");
+}

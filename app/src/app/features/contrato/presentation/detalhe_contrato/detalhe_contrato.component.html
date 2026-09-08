@@ -1,0 +1,51 @@
+<header>
+    <span class="ids-insight">{{ headerTitle }}</span>
+    <div class="header-buttons">
+      <button idsMainButton variant="secondary" (click)="goBack()">
+        Cancelar
+        <ids-icon>close_base</ids-icon>
+      </button>
+      <button idsMainButton variant="secondary" (click)="goBack()">
+        Salvar e Sair
+        <ids-icon>save_base</ids-icon>
+      </button>
+      <button idsMainButton [disabled]="!podeContinuar" (click)="add()">
+        Continuar
+        <ids-icon>arrow_right_base</ids-icon>
+      </button>
+    </div>
+</header>
+
+<ids-progress-step
+  [steps]="steps"
+  [(currentStep)]="progress"
+  class="progress-step"
+></ids-progress-step>
+
+@switch (progress) { @case (1) {
+<detalhe-contrato-cadastro></detalhe-contrato-cadastro>
+} @case (2) {
+<detalhe-contrato-participantes></detalhe-contrato-participantes>
+} @case (3) {
+<detalhe-contrato-resumo></detalhe-contrato-resumo>
+} @case (4) {
+<detalhe-contrato-arquivos></detalhe-contrato-arquivos>
+} }
+
+
+<div class="footer">
+  <div class="footer-buttons">
+    <button idsMainButton variant="secondary" (click)="goBack()">
+      Cancelar
+      <ids-icon>close_base</ids-icon>
+    </button>
+    <button idsMainButton variant="secondary" (click)="goBack()">
+      Salvar e Sair
+      <ids-icon>save_base</ids-icon>
+    </button>
+    <button idsMainButton [disabled]="!podeContinuar" (click)="add()">
+      Continuar
+      <ids-icon>arrow_right_base</ids-icon>
+    </button>
+  </div>
+</div >

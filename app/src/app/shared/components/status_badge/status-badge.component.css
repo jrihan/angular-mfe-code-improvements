@@ -1,0 +1,31 @@
+.status-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* cores diretas */
+.status-in-progress {
+  background-color: #5a5a5a;
+}
+
+.status-done {
+  background-color: #0b3bdb;
+}
+
+.status-with-split {
+  background-color: #0a623f;
+}
+
+.status-upload-required {
+  background-color: #f6760c;
+}
+
+.status-unknown {
+  background-color: #6b7280;
+}

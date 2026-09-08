@@ -1,0 +1,10 @@
+export enum BankAccountTypeEnum {
+  CONTA_CORRENTE = 'C',
+  CONTA_DESATIVADA = 'D',
+  CONTA_NAO_CORRENTISTA = 'N',
+  CONTA_PAGAMENTO = 'G',
+  CONTA_POUPANCA = 'P',
+  CONTA_INVESTIMENTO = 'I',
+  CONTA_FINANCEIRA = 'F',
+  CONTA_VIRTUAL = 'V',
+}

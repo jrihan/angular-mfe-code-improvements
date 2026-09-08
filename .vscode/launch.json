@@ -1,0 +1,63 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Angular: debug dev",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/app",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "start:dev"
+      ],
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "serverReadyAction": {
+        "action": "debugWithEdge",
+        "killOnServerStop": true,
+        "pattern": "(https?:\\/\\/localhost:5000\\/?)",
+        "uriFormat": "%s",
+        "webRoot": "${workspaceFolder}/app"
+      },
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${workspaceFolder}/app/*",
+        "webpack:///src/*": "${workspaceFolder}/app/src/*",
+        "webpack:///*": "*",
+        "webpack:///./~/*": "${workspaceFolder}/app/node_modules/*"
+      }
+    },
+    {
+      "name": "Angular: debug local",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/app",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+          "start:local"
+      ],
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "serverReadyAction": {
+        "action": "debugWithEdge",
+        "killOnServerStop": true,
+        "pattern": "(https?:\\/\\/localhost:5000\\/?)",
+        "uriFormat": "%s",
+        "webRoot": "${workspaceFolder}/app"
+      },
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${workspaceFolder}/app/*",
+        "webpack:///src/*": "${workspaceFolder}/app/src/*",
+        "webpack:///*": "*",
+        "webpack:///./~/*": "${workspaceFolder}/app/node_modules/*"
+      }
+    }
+  ]
+}

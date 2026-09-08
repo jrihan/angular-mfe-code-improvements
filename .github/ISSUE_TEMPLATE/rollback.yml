@@ -1,0 +1,19 @@
+name: Rollback
+description: 'O rollback será baseado na última execução com sucesso.'
+title: "Solicitação de rollback"
+labels: [rollback]
+
+body:
+  - type: input
+    attributes:
+      label: GMUD
+      description: Insira o número da sua GMUD
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Pacote de retorno
+      description: Insira o número do pacote de retorno informado na GMUD
+    validations:
+      required: true

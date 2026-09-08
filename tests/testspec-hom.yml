@@ -1,0 +1,22 @@
+# Arquivo de Configuração do TAAC
+# Para maiores informações acesse nossa documentação https://github-pages-dev.cloud.itau.com.br/itau-pg8-doc-taac-testasacode/documentacao/
+# Grupo Teams TAAC https://teams.microsoft.com/l/team/19%3aSegbLOjHQU-jY5BXezud9nlQs3sCtMnSC8JTnhcASiA1%40thread.tacv2/conversations?groupId=dc175160-90cd-4d0f-99a7-c36be30bebfe&tenantId=591669a0-183f-49a5-98f4-9aa0d0b63d81
+version: 0.2
+phases:
+  build:
+    commands:
+      - apt update -y
+      - apt-get -y install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev
+      - apt-get -y install libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+      - npm run e2e:report
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - cd app
+      - npm install
+artifacts:
+  base-directory: app/cypress/results/
+  files:
+    - "junitreport.xml"
+  file-format: JunitXml

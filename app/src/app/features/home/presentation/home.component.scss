@@ -1,0 +1,43 @@
+.title {
+    margin: 2rem 0rem;
+}
+
+.cards-grid {
+    display: grid;
+    gap: 1rem; /* espaçamento entre os cards */
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas iguais */
+}
+
+.quick-access {
+    display: grid;
+    gap: 1rem; /* espaçamento entre os cards */
+    grid-template-columns: repeat(4, 1fr); /* 3 colunas iguais */
+}
+
+/* Quando a viewport for <= 768px (tablet/celular), empilha em 1 coluna */
+@media (max-width: 768px) {
+    .cards-grid {
+        grid-template-columns: 1fr; /* uma coluna */
+    }
+}
+
+/* GRID RESPONSIVO */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

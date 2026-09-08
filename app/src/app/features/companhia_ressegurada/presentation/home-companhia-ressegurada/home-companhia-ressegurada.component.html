@@ -1,0 +1,68 @@
+<header>
+  <span class="ids-insight">Companhia Ressegurada</span>
+  <div class="header-buttons">
+    <button idsMainButton variant="secondary" (click)="goBack()">
+      Voltar
+      <ids-icon>arrow_left_base</ids-icon>
+    </button>
+    <button idsMainButton (click)="goTo('companhia-ressegurada-cadastro')">
+      Novo Cadastro
+      <ids-icon>plus_base</ids-icon>
+    </button>
+  </div>
+</header>
+
+<container-base title="Filtro">
+  <div class="filter">
+    <ids-input-search class="filter-search">
+      <input idsInput name="test" aria-label="pesquise uma palavra" />
+    </ids-input-search>
+    <button idsMainButton>
+      Buscar
+      <ids-icon>search_base</ids-icon>
+    </button>
+  </div>
+</container-base>
+
+<container-base title="Companhias Cadastradas">
+  <ids-shimmer [show]="isLoading">
+    <ids-table-wrapper maxHeight="480px">
+      <table idsTable [dataSource]="data1">
+        <ids-text-column
+          *ngFor="let column of displayedColumns; let i = index"
+          [name]="column"
+          [headerText]="headerNames[i]"
+        ></ids-text-column>
+
+        <tr idsHeaderRow *idsHeaderRowDef="displayedColumns"></tr>
+        <tr idsRow *idsRowDef="let row; columns: displayedColumns"></tr>
+        <tr *idsNoDataRow>
+          <td colspan="4" class="ids-p-9">
+            <h4 class="ids-title -small -bold ids-mb-2">
+              Nenhum registro encontrado
+            </h4>
+            <p class="ids-body-text -small">Nenhum dado encontrado</p>
+            <p class="ids-body-text -small">
+              Não há registro para exibir no momento. Verifique suas
+              configurações ou tente novamente.
+            </p>
+            <button
+              idsContextualButton
+              class="ids-mt-4"
+              (click)="loadCompanhias()"
+            >
+              tentar novamente
+            </button>
+          </td>
+        </tr>
+      </table>
+
+      <ids-pagination
+        *ngIf="total > 0"
+        [total]="total"
+        [currentPageSize]="currentPageSize"
+        [currentPage]="currentPage"
+      ></ids-pagination>
+    </ids-table-wrapper>
+  </ids-shimmer>
+</container-base>

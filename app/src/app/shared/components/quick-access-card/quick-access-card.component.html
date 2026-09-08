@@ -1,0 +1,21 @@
+<div
+  class="quick-access-card"
+  [class.clickable]="clickable"
+  [class.disabled]="disabled"
+  [attr.tabindex]="clickable ? 0 : -1"
+  role="button"
+  [routerLink]="
+    clickable && !quickAccessClick.observers.length ? routerLink : null
+  "
+  (click)="onCardClick($event)"
+>
+  <div class="icon" aria-hidden="true">
+    <ids-icon size="XL" contrast="onBrand" variant="neutral">{{
+      icon
+    }}</ids-icon>
+  </div>
+
+  <div class="label">
+    <span class="ids-title -xsmall -on-brand">{{ label }}</span>
+  </div>
+</div>

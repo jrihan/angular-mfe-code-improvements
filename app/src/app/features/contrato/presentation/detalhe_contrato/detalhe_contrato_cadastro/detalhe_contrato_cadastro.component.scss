@@ -1,0 +1,49 @@
+.horizontaly {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+
+  ids-form-field {
+    flex: 1;
+  }
+
+  .ramo-field {
+    flex: 1;
+  }
+
+  app-multiselect-summary {
+    flex: 1;
+  }
+}
+
+.ramo-subtitle {
+  margin: 16px 0 8px;
+  font-weight: 600;
+}
+
+.ramo-label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.required {
+  color: #d32f2f;
+}
+
+.ramo-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #888;
+}
+
+ids-form-selection-group {
+  display: flex;
+  width: 100%;
+
+  ids-form-selection {
+    flex: 1;
+  }
+}

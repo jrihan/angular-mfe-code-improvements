@@ -1,0 +1,21 @@
+name: '2.5 - [EPHEMERAL] Build & Deploy'
+run-name: '2.5 - [EPHEMERAL] Build & Deploy - ${{ inputs.environment }}'
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy (dev or hom)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - hom
+
+jobs:
+  app:
+    uses: itau-corp/itau-up2-nested-reusable-nodejs-s3/.github/workflows/ephemeral.yml@v2-stk-wk
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit

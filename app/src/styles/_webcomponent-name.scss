@@ -1,0 +1,4 @@
+// Centralized WebComponent name configuration
+// This file should be imported by all theme files to ensure consistent naming
+$webcomponent-name: "mf-plataformaresseguro-mfe";
+$webcomponent-wrapper-name: "#{$webcomponent-name}-wrapper";

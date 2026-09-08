@@ -1,0 +1,270 @@
+<ids-breadcrumbs [items]="items"></ids-breadcrumbs>
+
+<header class="page-header">
+  <span class="ids-insight">Contratos de Resseguro</span>
+
+  <div class="header-buttons">
+    <button idsMainButton variant="secondary" (click)="goBack()">
+      Voltar
+      <ids-icon>arrow_left_base</ids-icon>
+    </button>
+    <button idsMainButton (click)="goToCreate()">
+      Novo Contrato
+      <ids-icon>plus_base</ids-icon>
+    </button>
+  </div>
+</header>
+
+<section class="cards-grid">
+  <card-base-component
+    title="Total de Contratos"
+    value="0"
+    icon="warning_base"
+    accentColor="#FF6200"
+    [clickable]="true"
+  />
+  <card-base-component
+    title="Em Andamento"
+    value="0"
+    accentColor="#4C4C4C"
+    [clickable]="true"
+    icon="doc_base"
+  />
+  <card-base-component
+    title="Concluídos"
+    value="0"
+    accentColor="#001FBD"
+    [clickable]="true"
+    icon="positive_record_base"
+  />
+  <card-base-component
+    title="Com Rateio"
+    value="0"
+    accentColor="#0B5B38"
+    [clickable]="true"
+    icon="positive_record_base"
+  />
+</section>
+
+<container-base title="Filtro">
+  <div class="filter">
+    <ids-input-search class="filter-search">
+      <input idsInput name="test" aria-label="Pesquisar por nome do contrato" />
+    </ids-input-search>
+    <button idsMainButton variant="secondary" (click)="abrirFiltros()">
+      Filtrar
+      <ids-icon>filter_base</ids-icon>
+    </button>
+  </div>
+</container-base>
+
+<ids-table-wrapper maxHeight="480px">
+  <table idsTable [dataSource]="data">
+    <ng-container idsColumnDef="nomeDoContrato" truncate>
+      <th idsHeaderCell *idsHeaderCellDef idsSort>Nome do Contrato</th>
+      <td idsCell *idsCellDef="let row" class="ids-tooltip-wrapper">
+        <a class="ids-link" [href]="row.link">{{ row.nomeDoContrato }}</a>
+        <ids-tooltip>conteúdo do tooltip</ids-tooltip>
+      </td>
+    </ng-container>
+
+    <ng-container idsColumnDef="status" truncate>
+      <th idsHeaderCell *idsHeaderCellDef idsSort>Status</th>
+      <td idsCell *idsCellDef="let row">
+        <span class="ids-tag" [ngClass]="tagClassePorStatus(row.status)">{{
+          row.status
+        }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container idsColumnDef="vigencia" truncate>
+      <th idsHeaderCell *idsHeaderCellDef idsSort>Vigência</th>
+      <td idsCell *idsCellDef="let row">{{ row.vigencia }}</td>
+    </ng-container>
+
+    <ng-container idsColumnDef="tipoDeContrato" truncate>
+      <th idsHeaderCell *idsHeaderCellDef idsSort>Tipo de Contrato</th>
+      <td idsCell *idsCellDef="let row">{{ row.tipoDeContrato }}</td>
+    </ng-container>
+
+    <ng-container idsColumnDef="modalidadeDeContrato" truncate>
+      <th idsHeaderCell *idsHeaderCellDef idsSort>Modalidade de Contrato</th>
+      <td idsCell *idsCellDef="let row">{{ row.modalidadeDeContrato }}</td>
+    </ng-container>
+
+    <ng-container idsColumnDef="baseDeCobertura" truncate>
+      <th idsHeaderCell *idsHeaderCellDef idsSort>Base de Cobertura</th>
+      <td idsCell *idsCellDef="let row">{{ row.baseDeCobertura }}</td>
+    </ng-container>
+
+    <ng-container idsColumnDef="submodalidade" truncate>
+      <th idsHeaderCell *idsHeaderCellDef idsSort>Submodalidade</th>
+      <td idsCell *idsCellDef="let row">{{ row.submodalidade }}</td>
+    </ng-container>
+
+    <ng-container idsColumnDef="companhia" truncate>
+      <th idsHeaderCell *idsHeaderCellDef idsSort>Companhia</th>
+      <td idsCell *idsCellDef="let row">{{ row.companhia }}</td>
+    </ng-container>
+
+    <ng-container idsColumnDef="broker" truncate>
+      <th idsHeaderCell *idsHeaderCellDef idsSort>Broker</th>
+      <td idsCell *idsCellDef="let row">{{ row.broker }}</td>
+    </ng-container>
+
+    <ng-container idsColumnDef="resseguradoras" truncate>
+      <th idsHeaderCell *idsHeaderCellDef idsSort>Resseguradoras</th>
+      <td idsCell *idsCellDef="let row">{{ row.resseguradoras }}</td>
+    </ng-container>
+
+    <ng-container idsColumnDef="acoes" truncate>
+      <th idsHeaderCell *idsHeaderCellDef>Ações</th>
+      <td idsCell *idsCellDef="let row">
+        <button idsIconButton title="download">download_base</button>
+        <button idsIconButton title="continuar o cadastro">
+          positive_record_base
+        </button>
+        <button idsIconButton title="deletar" (click)="deleteContrato(row)">
+          trash_base
+        </button>
+      </td>
+    </ng-container>
+
+    <tr idsHeaderRow *idsHeaderRowDef="displayedColumns"></tr>
+    <tr idsRow *idsRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <ids-pagination
+    [total]="data.length"
+    [currentPageSize]="data.length"
+    [currentPage]="1"
+  ></ids-pagination>
+</ids-table-wrapper>
+
+<ids-modal [(open)]="isOpenDeleteModal" width="600px">
+  <ids-modal-header>
+    <h2 idsModalTitle>Deletar</h2>
+  </ids-modal-header>
+
+  <p class="ids-mt-2 ids-p-4">
+    Ao confirmar, o documento será excluído permanentemente e não poderá ser
+    recuperado. @if (contratoSelecionadoParaExcluir) {
+    <strong>{{ contratoSelecionadoParaExcluir.nomeDoContrato }}</strong>
+    }
+  </p>
+
+  <ids-modal-footer>
+    <button idsMainButton variant="secondary" (click)="fecharModalDelete()">
+      Cancelar
+    </button>
+    <button idsMainButton (click)="confirmarDeleteContrato()">Deletar</button>
+  </ids-modal-footer>
+</ids-modal>
+
+<ids-side-sheet [(open)]="isSideSheetOpen" widthPercentage="30">
+  <ids-side-sheet-header>
+    <h3 class="ids-side-sheet-header-title">
+      <ids-icon>filter_base</ids-icon>
+      Filtro
+    </h3>
+  </ids-side-sheet-header>
+
+  <div class="ids-side-sheet-body">
+    <form [formGroup]="filterForm" (ngSubmit)="aplicarFiltros()">
+      <ids-form-field label="Status">
+        <ids-select formControlName="status">
+          <ids-option [value]="''">Selecione...</ids-option>
+          <ids-option
+            *ngFor="let option of statusOptions"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Vigência">
+        <input idsInput idsDatepickerRange formControlName="vigencia" />
+      </ids-form-field>
+
+      <ids-form-field label="Tipo de Contrato">
+        <ids-select formControlName="tipoDeContrato">
+          <ids-option [value]="''">Selecione...</ids-option>
+          <ids-option
+            *ngFor="let option of tipoDeContratoOptions"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Modalidade de Contrato">
+        <ids-select formControlName="modalidadeDeContrato">
+          <ids-option [value]="''">Selecione...</ids-option>
+          <ids-option
+            *ngFor="let option of modalidadeDeContratoOptions"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Submodalidade">
+        <ids-select formControlName="submodalidade">
+          <ids-option [value]="''">Selecione...</ids-option>
+          <ids-option
+            *ngFor="let option of submodalidadeOptions"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Companhia">
+        <ids-select formControlName="companhia">
+          <ids-option [value]="''">Selecione...</ids-option>
+          <ids-option
+            *ngFor="let option of companhiaOptions"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Broker">
+        <ids-select formControlName="broker">
+          <ids-option [value]="''">Selecione...</ids-option>
+          <ids-option
+            *ngFor="let option of brokerOptions"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Resseguradoras">
+        <ids-select formControlName="resseguradoras">
+          <ids-option [value]="''">Selecione...</ids-option>
+          <ids-option
+            *ngFor="let option of resseguradorasOptions"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+    </form>
+  </div>
+
+  <ids-dialog-footer>
+    <button idsMainButton variant="secondary" (click)="fecharFiltros()">
+      Cancelar
+    </button>
+    <button idsMainButton (click)="aplicarFiltros()">Aplicar</button>
+  </ids-dialog-footer>
+</ids-side-sheet>

@@ -1,0 +1,23 @@
+<div class="multiselect">
+  <div class="select-box" (click)="toggleDropdown()">
+    <span>
+      {{ selectedCount > 0 ? selectedCount + " selecionado(s)" : placeholder }}
+    </span>
+
+    <idsw-icon
+      class="arrow"
+      [name]="isOpen ? 'arrow_up' : 'arrow_down'"
+    ></idsw-icon>
+  </div>
+
+  <div class="dropdown" *ngIf="isOpen">
+    <div
+      class="option"
+      *ngFor="let option of options"
+      (click)="selectOption(option)"
+      [class.selected]="isSelected(option)"
+    >
+      {{ option.label }}
+    </div>
+  </div>
+</div>

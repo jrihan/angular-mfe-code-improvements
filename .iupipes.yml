@@ -1,0 +1,64 @@
+project:
+  language: angular
+
+build:
+  version: 18
+  working-directory: 'app'  # Default: ''. Diretorio no github onde irá executado os comandos de build, test. (Obrigatório)
+
+test:
+  disable: false  # Default: 'false'. Caso true, desabilita o job de teste.
+
+publish:
+  output-dir: 'dist'  # Default: 'dist'. Pasta específica onde o artefato do build será gerado.
+
+deploy:
+  aws:
+    dev:
+      account: "054854578098"   # Conta AWS de DEV.
+      region: "sa-east-1"
+      s3:
+        bucket: 'vo7-plataformaresseguro-mfe-dev'                       # Default: ''.      Nome do bucket em desenvolvimento. (Obrigatório)
+        path: 'seguros-solucoes/mf-plataformaresseguro-mfe' # Default: ''.      Caminho onde o artefato será entregue. Caso vazio será entregue na raiz do bucket.
+        force-delete-destination: false  # Default: 'false'. Caso true, arquivos que existem no bucket e não existem no resultado do build serão deletados.
+        uncompress: true                 # Default: 'true'. Caso false, será copiado um pacote zip para o bucket.
+    hom:
+      account: "772317732918" # Conta AWS de HOM.
+      region: "sa-east-1"
+      s3:
+        bucket: 'vo7-plataformaresseguro-mfe-hom'
+        path: 'seguros-solucoes/mf-plataformaresseguro-mfe'
+        force-delete-destination: false
+        uncompress: true
+    prod:
+      account: "274859571344" # Conta AWS de PROD.
+      region: "sa-east-1"
+      s3:
+        bucket: 'vo7-plataformaresseguro-mfe-prod'
+        path: 'seguros-solucoes/mf-plataformaresseguro-mfe'
+        force-delete-destination: false
+        uncompress: true
+quality:
+  sonar:
+    language: angular  # A linguagem que será feita a análise de código
+    working-directory: 'app'                # O path que se encontra o projeto
+    projectPropertiesPath: '.'               # O path que se encontra o arquivo sonar-project.properties
+    parameters: ''                          # Parametros adicionais para o build Ex. -Dsonar.projectKey=myproject
+
+taac:
+  dev:
+    failOnError: false ##Em caso de teste com falha, o step do taac apresenta erro(fica vermelho)
+    codebuild:
+      computeType: "BUILD_GENERAL1_MEDIUM" ##Tipo de maquina codebuild provisionado para executar o teste
+  hom:
+    failOnError: false
+    codebuild:
+      computeType: "BUILD_GENERAL1_SMALL"
+
+security:
+  # Obrigatorio
+  fortify:
+    environment-analyse: 'public_cloud'       # Default: 'private_cloud'. Associado a instancia do fortify (Obrigatorio)
+    nome-aws: 'plataformaresseguro-mfe'  # Default: N/A.             Nome da aplicação no BOH (Obrigatorio)
+    produto-aws: 'plataformaresseguro'       # Default: N/A.             Nome da conta AWS (Obrigatorio)
+    sigla-app: 'VO7-P1002'                       # Default: N/A. Sigla app cadastrada no BOH (Obrigatorio)
+    sigla: 'vo7'                              # Default: N/A. Sigla cadastrada no BOH (Obrigatorio)

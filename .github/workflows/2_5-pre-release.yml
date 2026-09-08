@@ -1,0 +1,10 @@
+name: "2.5 - [HOM] Pre-release to release"
+
+on:
+  push:
+    branches: 'pre-release'
+
+jobs:
+  app:
+    uses: itau-corp/itau-up2-nested-reusable-nodejs-s3/.github/workflows/pre-release_prepare.yml@v2
+    secrets: inherit

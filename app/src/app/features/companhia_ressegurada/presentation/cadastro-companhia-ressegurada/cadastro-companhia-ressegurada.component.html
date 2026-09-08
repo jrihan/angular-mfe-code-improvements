@@ -1,0 +1,409 @@
+<header>
+  <span class="ids-insight">Cadastro de companhia ressegurada</span>
+
+  <div class="header-buttons">
+    <button idsMainButton variant="secondary" (click)="goBack()">
+      Cancelar
+      <ids-icon>close_base</ids-icon>
+    </button>
+
+    <button
+      idsMainButton
+      [disabled]="!isSalvarHabilitado || isLoadingSalvar"
+      (click)="salvarCadastro()"
+    >
+      <ids-loading
+        *ngIf="isLoadingSalvar"
+        size="XS"
+        aria-label="Salvando"
+      ></ids-loading>
+
+      <ng-container *ngIf="!isLoadingSalvar">
+        Salvar
+        <ids-icon>save_base</ids-icon>
+      </ng-container>
+    </button>
+  </div>
+</header>
+
+<container-base title="Filtro">
+  <form
+    [formGroup]="cnpjForm"
+    class="filter"
+    (ngSubmit)="buscarDadosCadastrais()"
+  >
+    <ids-input-search class="filter-search">
+      <input
+        idsInput
+        formControlName="cnpj"
+        name="cnpj"
+        aria-label="Digite o CNPJ"
+        placeholder="Digite o CNPJ"
+        (input)="onCnpjInput($event)"
+        maxlength="18"
+        autocomplete="off"
+      />
+    </ids-input-search>
+    <button
+      idsMainButton
+      type="submit"
+      [disabled]="!isCnpjCompleto || isLoadingCnpj"
+    >
+      <ng-container *ngIf="isLoadingCnpj; else buscarLabel">
+        <ids-loading size="XS" aria-label="Loading tamanho XS"></ids-loading>
+      </ng-container>
+      <ng-template #buscarLabel>
+        Buscar
+        <ids-icon>search_base</ids-icon>
+      </ng-template>
+    </button>
+  </form>
+</container-base>
+
+<container-base title="Informações Básicas" *ngIf="dadosCadastrais">
+  <div class="horizontaly">
+    <ids-form-field label="Nome completo">
+      <input idsInput [value]="dadosCadastrais.nome_completo" readonly />
+    </ids-form-field>
+    <ids-form-field label="Nome fantasia">
+      <input idsInput [value]="dadosCadastrais.nome_fantasia" readonly />
+    </ids-form-field>
+  </div>
+  <form [formGroup]="susepForm" class="horizontaly">
+    <ids-form-field
+      label="Código Companhia Ressegurada"
+      [errorMessage]="getCodigoCompanhiaErrorMessage()"
+    >
+      <input
+        idsInput
+        formControlName="codigoCompanhiaRessegurada"
+        required
+        inputmode="numeric"
+        (input)="onCodigoNumericoInput($event, 'codigoCompanhiaRessegurada')"
+      />
+    </ids-form-field>
+    
+    <ids-form-field
+      label="Código SUSEP"
+      [errorMessage]="getSusepErrorMessage()"
+    >
+      <input
+        idsInput
+        formControlName="susep"
+        required
+        maxlength="5"
+        inputmode="numeric"
+        (input)="onSusepInput($event)"
+      />
+    </ids-form-field>
+
+    <ids-form-field
+      label="Código Centro de Custo"
+      [errorMessage]="getCodigoCentroCustoErrorMessage()"
+    >
+      <input
+        idsInput
+        formControlName="codigoCentroCusto"
+        inputmode="numeric"
+        (input)="onCodigoNumericoInput($event, 'codigoCentroCusto')"
+      />
+    </ids-form-field>
+  </form>
+</container-base>
+
+<container-base title="Endereços" *ngIf="dadosCadastrais?.enderecos?.length">
+  <div *ngFor="let endereco of dadosCadastrais?.enderecos" class="item-divider">
+    <!-- Identificação -->
+    <div class="horizontaly" style="gap: 12px">
+      <ids-form-field label="Tipo de Endereço">
+        <input idsInput [value]="endereco.proposito_endereco" readonly />
+      </ids-form-field>
+    </div>
+
+    <!-- Localização -->
+    <div class="horizontaly" style="gap: 12px">
+      <ids-form-field label="País">
+        <input idsInput [value]="endereco.pais" readonly />
+      </ids-form-field>
+
+      <ids-form-field label="UF">
+        <input idsInput [value]="endereco.uf" readonly />
+      </ids-form-field>
+
+      <ids-form-field label="Cidade">
+        <input idsInput [value]="endereco.cidade" readonly />
+      </ids-form-field>
+
+      <ids-form-field label="CEP">
+        <input idsInput [value]="endereco.cep" readonly />
+      </ids-form-field>
+    </div>
+
+    <!-- Logradouro -->
+    <div class="horizontaly" style="gap: 12px">
+      <ids-form-field label="Logradouro">
+        <input idsInput [value]="endereco.logradouro" readonly />
+      </ids-form-field>
+
+      <ids-form-field label="Número">
+        <input idsInput [value]="endereco.numero" readonly />
+      </ids-form-field>
+    </div>
+
+    <div class="horizontaly" style="gap: 12px">
+      <ids-form-field label="Complemento">
+        <input idsInput [value]="endereco.complemento" readonly />
+      </ids-form-field>
+
+      <ids-form-field label="Bairro">
+        <input idsInput [value]="endereco.bairro" readonly />
+      </ids-form-field>
+    </div>
+  </div>
+</container-base>
+
+<container-base title="Telefones" *ngIf="dadosCadastrais?.telefones?.length">
+  <div *ngFor="let tel of dadosCadastrais?.telefones" class="item-divider">
+    <!-- Identificação -->
+    <div class="horizontaly" style="gap: 12px">
+      <ids-form-field label="Tipo de Telefone">
+        <input idsInput [value]="tel.tipo_telefone" readonly />
+      </ids-form-field>
+    </div>
+
+    <!-- Número -->
+    <div class="horizontaly" style="gap: 12px">
+      <ids-form-field label="DDI">
+        <input idsInput [value]="tel.ddi" readonly />
+      </ids-form-field>
+
+      <ids-form-field label="DDD">
+        <input idsInput [value]="tel.ddd" readonly />
+      </ids-form-field>
+
+      <ids-form-field label="Número">
+        <input idsInput [value]="tel.numero" readonly />
+      </ids-form-field>
+    </div>
+  </div>
+</container-base>
+
+<container-base title="E-mails" *ngIf="dadosCadastrais?.emails?.length">
+  <div *ngFor="let mail of dadosCadastrais?.emails" class="item-divider">
+    <!-- Identificação -->
+    <div class="horizontaly" style="gap: 12px">
+      <ids-form-field label="Departamento">
+        <input idsInput [value]="mail.departamento" readonly />
+      </ids-form-field>
+    </div>
+
+    <!-- Contato -->
+    <ids-form-field label="Nome do Contato">
+      <input idsInput [value]="mail.nome_contato" readonly />
+    </ids-form-field>
+
+    <!-- Email -->
+    <ids-form-field label="E-mail">
+      <input idsInput [value]="mail.email" readonly />
+    </ids-form-field>
+  </div>
+</container-base>
+
+<container-base title="Contas" *ngIf="dadosCadastrais">
+  <div *ngIf="!dadosConta?.length" id="preencher-conta" class="horizontaly">
+    <form [formGroup]="contaForm" style="display: flex; width: 100%; gap: 12px">
+      <ids-form-field label="Banco" class="campo-banco">
+        <ids-select
+          formControlName="banco"
+          (ngModelChange)="markContaFormTouched()"
+        >
+          <ids-option
+            *ngFor="let banco of instituicoes_financeiras?.data"
+            [value]="banco.codigo"
+          >
+            {{ banco.codigo }} - {{ banco.nome }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+      <ids-form-field label="Agência" class="campo-agencia">
+        <input
+          idsInput
+          formControlName="agencia"
+          (input)="markContaFormTouched()"
+        />
+      </ids-form-field>
+      <ids-form-field label="Código da Conta" class="campo-conta">
+        <input
+          idsInput
+          formControlName="conta"
+          (input)="markContaFormTouched()"
+        />
+      </ids-form-field>
+      <ids-form-field label="DAC" class="campo-dac">
+        <input
+          idsInput
+          formControlName="dac"
+          (input)="markContaFormTouched()"
+        />
+      </ids-form-field>
+      <ids-form-field label="Tipo da conta" class="campo-tipo">
+        <ids-select
+          formControlName="tipo"
+          (ngModelChange)="markContaFormTouched()"
+        >
+          <ids-option *ngFor="let tipo of tiposConta" [value]="tipo.codigo">
+            {{ tipo.nome }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+    </form>
+  </div>
+  <div *ngIf="dadosConta?.length" id="selecionar-conta">
+    <div class="account-filters-grid">
+      <ids-form-field label="Código Banco">
+        <ids-select
+          [formControl]="filtroBanco"
+          (ngModelChange)="onFiltroInput()"
+        >
+          <ids-option value="">Todos</ids-option>
+          <ids-option
+            *ngFor="let banco of opcoesFiltroBanco"
+            [value]="banco.optValue"
+          >
+            {{ banco.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Código Agência">
+        <ids-select
+          [formControl]="filtroAgencia"
+          (ngModelChange)="onFiltroInput()"
+        >
+          <ids-option value="">Todas</ids-option>
+          <ids-option
+            *ngFor="let ag of opcoesFiltroAgencia"
+            [value]="ag.optValue"
+          >
+            {{ ag.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Tipo da Conta">
+        <ids-select
+          [formControl]="filtroTipo"
+          (ngModelChange)="onFiltroInput()"
+        >
+          <ids-option value="">Todos</ids-option>
+          <ids-option
+            *ngFor="let tipo of opcoesFiltroTipo"
+            [value]="tipo.optValue"
+          >
+            {{ tipo.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Código Conta">
+        <input
+          idsInput
+          [formControl]="filtroContaExata"
+          name="filtroContaExata"
+          aria-label="Filtrar por código conta"
+          (input)="onFiltroInput()"
+          autocomplete="off"
+        />
+      </ids-form-field>
+
+      <ids-form-field label="DAC">
+        <ids-select [formControl]="filtroDac" (ngModelChange)="onFiltroInput()">
+          <ids-option value="">Todos</ids-option>
+          <ids-option
+            *ngFor="let dac of opcoesFiltroDac"
+            [value]="dac.optValue"
+          >
+            {{ dac.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+    </div>
+
+    <ids-table-wrapper>
+      <table idsTable [dataSource]="dadosContaPaginada">
+        <ids-checkbox-column
+          name="selected"
+          (checkAll)="checkAll($event)"
+          (checkRow)="checkRow($event)"
+        >
+        </ids-checkbox-column>
+
+        <ng-container idsColumnDef="codigo_banco">
+          <th idsHeaderCell *idsHeaderCellDef idsSort>Código Banco</th>
+          <td idsCell *idsCellDef="let row">
+            {{ row.codigo_banco }}
+          </td>
+        </ng-container>
+
+        <ng-container idsColumnDef="codigo_agencia">
+          <th idsHeaderCell *idsHeaderCellDef idsSort>Código Agência</th>
+          <td idsCell *idsCellDef="let row">
+            {{ row.codigo_agencia }}
+          </td>
+        </ng-container>
+
+        <ng-container idsColumnDef="tipo_conta">
+          <th idsHeaderCell *idsHeaderCellDef idsSort>Tipo da Conta</th>
+          <td idsCell *idsCellDef="let row">
+            {{ row.tipo_conta }}
+          </td>
+        </ng-container>
+
+        <ng-container idsColumnDef="codigo_conta">
+          <th idsHeaderCell *idsHeaderCellDef idsSort>Código Conta</th>
+          <td idsCell *idsCellDef="let row">
+            {{ row.codigo_conta }}
+          </td>
+        </ng-container>
+
+        <ng-container idsColumnDef="dac">
+          <th idsHeaderCell *idsHeaderCellDef idsSort>DAC</th>
+          <td idsCell *idsCellDef="let row">
+            {{ row.dac }}
+          </td>
+        </ng-container>
+
+        <tr idsHeaderRow *idsHeaderRowDef="displayedColumns"></tr>
+        <tr idsRow *idsRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <ids-pagination
+        [total]="dadosContaFiltrados.length"
+        [currentPageSize]="pageSize"
+        [pageSizes]="pageSizes"
+        [currentPage]="currentPage"
+        (paginate)="onPaginate($event)"
+      ></ids-pagination>
+    </ids-table-wrapper>
+  </div>
+</container-base>
+
+<footer *ngIf="dadosCadastrais" class="footer">
+  <button idsMainButton variant="secondary" (click)="goBack()">
+    Cancelar
+    <ids-icon>close_base</ids-icon>
+  </button>
+  <button
+    idsMainButton
+    [disabled]="!isSalvarHabilitado || isLoadingSalvar"
+    (click)="salvarCadastro()"
+  >
+    <ng-container *ngIf="isLoadingSalvar; else salvarLabel">
+      <ids-loading size="XS" aria-label="Loading tamanho XS"></ids-loading>
+    </ng-container>
+    <ng-template #salvarLabel>
+      Salvar
+      <ids-icon>save_base</ids-icon>
+    </ng-template>
+  </button>
+</footer>

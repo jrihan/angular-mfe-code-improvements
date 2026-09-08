@@ -1,0 +1,11 @@
+name: "3 - [HOM] Promote & Deploy"
+
+on:
+  pull_request:
+    types: closed
+    branches: 'release/**'
+
+jobs:
+  app:
+    uses: itau-corp/itau-up2-nested-reusable-nodejs-s3/.github/workflows/pre-release.yml@v2-stk-wk
+    secrets: inherit

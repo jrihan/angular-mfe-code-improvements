@@ -1,0 +1,14 @@
+name: "7 - Sonar & Sast"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    branches:
+      - 'release/**'
+
+jobs:
+  app:
+    uses: itau-corp/itau-up2-nested-reusable-nodejs-s3/.github/workflows/gates.yml@v2-stk-wk
+    secrets: inherit

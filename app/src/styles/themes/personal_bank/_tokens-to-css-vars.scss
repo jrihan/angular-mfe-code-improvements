@@ -1,0 +1,8 @@
+@import "@ids/tokens/personal_bank/tokens.scss";
+@import "../_base-tokens.scss";
+@import "../_webcomponent-name.scss";
+
+#{$webcomponent-wrapper-name}.ids-theme-personal_bank,
+.#{$webcomponent-name}.ids-theme-personal_bank {
+    @include export-ids-tokens-as-css-vars;
+}

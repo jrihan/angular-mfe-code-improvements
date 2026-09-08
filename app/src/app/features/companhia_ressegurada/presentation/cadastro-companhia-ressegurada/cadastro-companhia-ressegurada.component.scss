@@ -1,0 +1,79 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem 0 2rem 0;
+  .header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+.filter {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+}
+
+.filter-search {
+  flex: 1;
+}
+
+.horizontaly {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+
+  ids-form-field {
+    flex: 1;
+  }
+  .campo-banco {
+    flex: 2.2;
+    min-width: 180px;
+  }
+  .campo-conta {
+    flex: 1.5;
+    min-width: 120px;
+  }
+  .campo-agencia,
+  .campo-dac,
+  .campo-tipo {
+    flex: 1;
+    min-width: 80px;
+  }
+}
+
+.account-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+  width: 100%;
+
+  ids-form-field {
+    width: 100%;
+  }
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.item-divider {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--ids_color_border_soft);
+
+  &:not(:last-child) {
+    margin-bottom: 24px;
+  }
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}

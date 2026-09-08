@@ -1,0 +1,245 @@
+<container-base
+  title="Broker"
+  [done]="brokerForm.valid"
+  [showSwitcher]="true"
+  switcherLabel="Tem Broker"
+  [switcherChecked]="brokerForm.value.temBroker"
+  (switcherCheckedChange)="onTemBrokerToggle($event)"
+>
+  <form [formGroup]="brokerForm" *ngIf="brokerForm.value.temBroker">
+    <ids-form-field label="Broker">
+      <ids-select formControlName="broker">
+        <ids-option
+          *ngFor="let option of brokersDisponiveis"
+          [value]="option.optValue"
+        >
+          {{ option.optLabel }}
+        </ids-option>
+      </ids-select>
+    </ids-form-field>
+  </form>
+</container-base>
+
+<container-base
+  title="Resseguradores"
+  [done]="resseguradoresForm.valid"
+  [showLeftHeader]="true"
+  buttonTitle="Adicionar Ressegurador"
+  buttonIcon="plus_base"
+  (buttonClick)="adicionarRessegurador()"
+>
+  <div
+    class="ressegurador-card"
+    *ngFor="let ressegurador of resseguradores; let i = index"
+    [formGroup]="ressegurador"
+  >
+    <div class="ressegurador-header">
+      <div class="ressegurador-header-left">
+        <span class="ressegurador-nome">{{
+          nomeRessegurador(ressegurador.value.ressegurador)
+        }}</span>
+        <span class="status status-done" *ngIf="ressegurador.valid">
+          Preenchido
+        </span>
+      </div>
+
+      <div class="ressegurador-header-right">
+        <ids-form-selection class="header-switch">
+          <input
+            type="checkbox"
+            idsSwitch
+            [checked]="ressegurador.value.ressegurLider"
+            (change)="onLiderChange(i, $any($event.target).checked)"
+          />
+          Ressegurado Lider
+        </ids-form-selection>
+
+        <ids-form-selection class="header-switch">
+          <input
+            type="checkbox"
+            idsSwitch
+            [checked]="ressegurador.value.ressegurCoLider"
+            (change)="onCoLiderChange(i, $any($event.target).checked)"
+          />
+          Ressegurado Co-Lider
+        </ids-form-selection>
+
+        <button
+          type="button"
+          class="icon-button"
+          title="Remover ressegurador"
+          (click)="removerRessegurador(i)"
+        >
+          <ids-icon>trash_base</ids-icon>
+        </button>
+
+        <button
+          type="button"
+          class="icon-button"
+          (click)="toggleExpandRessegurador(i)"
+        >
+          <span
+            [style.transform]="
+              ressegurador.value.expanded ? 'rotate(0deg)' : 'rotate(-180deg)'
+            "
+            class="arrow"
+          >
+            <ids-icon>arrow_down_base</ids-icon>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ressegurador-content" *ngIf="ressegurador.value.expanded">
+      <div class="horizontaly">
+        <ids-form-field label="Ressegurador">
+          <ids-select formControlName="ressegurador">
+            <ids-option
+              *ngFor="let option of resseguradorasDisponiveis"
+              [value]="option.optValue"
+            >
+              {{ option.optLabel }}
+            </ids-option>
+          </ids-select>
+        </ids-form-field>
+
+        <ids-form-field label="Participação">
+          <input
+            idsInput
+            idsMask="currency"
+            [config]="percentConfig"
+            announce
+            formControlName="participacao"
+          />
+        </ids-form-field>
+
+        <ids-form-field label="PMD">
+          <input
+            idsInput
+            idsMask="currency"
+            [config]="percentConfig"
+            announce
+            formControlName="pmd"
+          />
+        </ids-form-field>
+      </div>
+
+      <div class="horizontaly">
+        <ids-form-field label="Taxa de Corretagem do Broker">
+          <input
+            idsInput
+            idsMask="currency"
+            [config]="percentConfig"
+            announce
+            formControlName="taxaCorretagemBroker"
+          />
+        </ids-form-field>
+
+        <ids-form-field label="Rebate">
+          <input
+            idsInput
+            idsMask="currency"
+            [config]="percentConfig"
+            announce
+            formControlName="rebate"
+          />
+        </ids-form-field>
+
+        <ids-form-selection class="checkbox-field">
+          <input type="checkbox" formControlName="acordoBitributacao" idsCheckbox />
+          Acordo Bitributação
+        </ids-form-selection>
+      </div>
+
+      <h4 class="condicoes-titulo">Condições de prêmio</h4>
+
+      <div class="horizontaly condicoes-grupo">
+        <div class="condicao-coluna">
+          <h5 class="condicao-subtitulo">Por Risco</h5>
+
+          <div
+            class="faixa"
+            *ngFor="let faixa of porRisco(i); let faixaIndex = index"
+            [formGroup]="faixa"
+          >
+            <span class="faixa-titulo">Faixa {{ faixaIndex + 1 }}</span>
+
+            <div class="horizontaly">
+              <ids-form-field label="Valor do PMD">
+                <input
+                  idsInput
+                  idsMask="currency"
+                  [config]="currencyConfig"
+                  announce
+                  formControlName="valorPmd"
+                />
+              </ids-form-field>
+
+              <ids-form-field label="Taxa de Ajuste">
+                <input
+                  idsInput
+                  idsMask="currency"
+                  [config]="percentPreciseConfig"
+                  announce
+                  formControlName="taxaAjuste"
+                />
+              </ids-form-field>
+
+              <ids-form-field label="Total">
+                <input
+                  idsInput
+                  [value]="formatarMoeda(calcularTotal(faixa))"
+                  disabled
+                  readonly
+                />
+              </ids-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="condicao-coluna">
+          <h5 class="condicao-subtitulo">Por Evento</h5>
+
+          <div
+            class="faixa"
+            *ngFor="let faixa of porEvento(i); let faixaIndex = index"
+            [formGroup]="faixa"
+          >
+            <span class="faixa-titulo">Faixa {{ faixaIndex + 1 }}</span>
+
+            <div class="horizontaly">
+              <ids-form-field label="Valor do PMD">
+                <input
+                  idsInput
+                  idsMask="currency"
+                  [config]="currencyConfig"
+                  announce
+                  formControlName="valorPmd"
+                />
+              </ids-form-field>
+
+              <ids-form-field label="Taxa de Ajuste">
+                <input
+                  idsInput
+                  idsMask="currency"
+                  [config]="percentPreciseConfig"
+                  announce
+                  formControlName="taxaAjuste"
+                />
+              </ids-form-field>
+
+              <ids-form-field label="Total">
+                <input
+                  idsInput
+                  [value]="formatarMoeda(calcularTotal(faixa))"
+                  disabled
+                  readonly
+                />
+              </ids-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</container-base>

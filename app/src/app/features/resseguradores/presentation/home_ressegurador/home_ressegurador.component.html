@@ -1,0 +1,206 @@
+<header>
+  <span class="ids-insight">Resseguradores</span>
+  <div class="header-buttons">
+    <button idsMainButton variant="secondary" (click)="goBack()">
+      Voltar
+      <ids-icon>arrow_left_base</ids-icon>
+    </button>
+    <button idsMainButton (click)="goToCreate()">
+      Novo Cadastro
+      <ids-icon>plus_base</ids-icon>
+    </button>
+  </div>
+</header>
+
+<container-base
+  title="Resseguradores Cadastrados"
+  buttonTitle="Filtrar Resseguradores"
+  [showLeftHeader]="true"
+  buttonIcon="filter_base"
+  [showSecondButton]="isFiltroAtivo"
+  secondButtonTitle="Desfazer Filtro"
+  secondButtonIcon="trash_base"
+  (buttonClick)="abrirFiltros()"
+  (secondButtonClick)="limparFiltros()"
+>
+  <ids-shimmer [show]="isLoading">
+    <ids-table-wrapper maxHeight="480px">
+      <table idsTable [dataSource]="resseguradoresList?.content ?? []">
+        <ng-container idsColumnDef="nomeCompleto">
+          <th idsHeaderCell *idsHeaderCellDef>Nome Completo</th>
+          <td idsCell *idsCellDef="let row">
+            {{ row.dadosCadastrais?.nomeCompleto }}
+          </td>
+        </ng-container>
+
+        <ng-container idsColumnDef="tipoDocumento">
+          <th idsHeaderCell *idsHeaderCellDef>Tipo Documento</th>
+          <td idsCell *idsCellDef="let row">
+            {{ row.dadosCadastrais?.tipoDocumento }}
+          </td>
+        </ng-container>
+
+        <ng-container idsColumnDef="numeroDocumento">
+          <th idsHeaderCell *idsHeaderCellDef>Número Documento</th>
+          <td idsCell *idsCellDef="let row">
+            {{ row.dadosCadastrais?.numeroDocumento }}
+          </td>
+        </ng-container>
+        <ng-container idsColumnDef="situacaoCadastral">
+          <th idsHeaderCell *idsHeaderCellDef>Situação Cadastral</th>
+          <td idsCell *idsCellDef="let row">{{ row.situacaoCadastral }}</td>
+        </ng-container>
+        <ng-container idsColumnDef="codigoSusep">
+          <th idsHeaderCell *idsHeaderCellDef>Código SUSEP</th>
+          <td idsCell *idsCellDef="let row">{{ row.codigoSusep }}</td>
+        </ng-container>
+
+        <ng-container idsColumnDef="acoes">
+          <th idsHeaderCell *idsHeaderCellDef>Ações</th>
+          <td idsCell *idsCellDef="let row">
+            <button
+              idsIconButton
+              title="editar"
+              (click)="goToEdit(row.idDbResseguro)"
+            >
+              edit_base
+            </button>
+            <button
+              idsIconButton
+              title="visualizar"
+              (click)="goToDetails(row.idDbResseguro)"
+            >
+              visivel_outline
+            </button>
+          </td>
+        </ng-container>
+
+        <tr idsHeaderRow *idsHeaderRowDef="displayedColumns"></tr>
+        <tr idsRow *idsRowDef="let row; columns: displayedColumns"></tr>
+        <tr *idsNoDataRow>
+          <td colspan="4" class="ids-p-9">
+            <h4 class="ids-title -small -bold ids-mb-2">
+              Nenhum registro encontrado
+            </h4>
+            <p class="ids-body-text -small">Nenhum dado encontrado</p>
+            <p class="ids-body-text -small">
+              Não há registro para exibir no momento. Verifique suas
+              configurações ou tente novamente.
+            </p>
+            <button
+              idsContextualButton
+              class="ids-mt-4"
+              (click)="loadResseguradores()"
+            >
+              tentar novamente
+            </button>
+          </td>
+        </tr>
+      </table>
+
+      <ids-pagination
+        *ngIf="total > 0"
+        [total]="total"
+        [(currentPageSize)]="pageSize"
+        [(currentPage)]="currentPage"
+        (paginate)="paginationChange($any($event))"
+      ></ids-pagination>
+    </ids-table-wrapper>
+  </ids-shimmer>
+</container-base>
+
+<ids-side-sheet [(open)]="isSideSheetOpen" widthPercentage="40">
+  <ids-side-sheet-header>
+    <h3
+      class="ids-side-sheet-header-title"
+      style="margin: 0; font-size: 1.5rem; font-weight: bold"
+    >
+      Filtrar Resseguradores
+    </h3>
+    <p
+      class="ids-side-sheet-header-description"
+      style="margin: 4px 0 0 0; font-size: 0.875rem; color: #666"
+    >
+      Selecione os critérios desejados para filtrar os registros na tabela.
+    </p>
+  </ids-side-sheet-header>
+
+  <div
+    class="ids-side-sheet-body"
+    style="padding: 24px; display: flex; flex-direction: column; gap: 16px"
+  >
+    <form
+      [formGroup]="filterForm"
+      (ngSubmit)="aplicarFiltros()"
+      style="display: flex; flex-direction: column; gap: 16px"
+    >
+      <ids-form-field label="Nome Completo">
+        <input
+          idsInput
+          formControlName="nomeCompleto"
+          placeholder="Digite o nome"
+        />
+      </ids-form-field>
+
+      <ids-form-field label="Código SUSEP">
+        <input
+          idsInput
+          formControlName="codigoSusep"
+          placeholder="Digite o código SUSEP"
+        />
+      </ids-form-field>
+
+      <ids-form-field label="Tipo do Documento">
+        <ids-select formControlName="tipoDocumento">
+          <ids-option [value]="''">Selecione...</ids-option>
+          <ids-option
+            *ngFor="let option of tipoDocumentoOptions"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Número do Documento">
+        <input
+          idsInput
+          formControlName="numeroDocumento"
+          placeholder="Digite o número"
+        />
+      </ids-form-field>
+
+      <ids-form-field label="Situação Cadastral">
+        <ids-select formControlName="situacaoCadastral">
+          <ids-option [value]="''">Selecione...</ids-option>
+          <ids-option
+            *ngFor="let option of situacaoCadastralOptions"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+    </form>
+  </div>
+
+  <ids-dialog-footer
+    style="
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 16px 24px;
+      border-top: 1px solid #ddd;
+      background: #fff;
+    "
+  >
+    <button idsMainButton (click)="limparFiltros()">
+      Limpar Filtros
+      <ids-icon>trash_base</ids-icon>
+    </button>
+    <button idsMainButton (click)="aplicarFiltros()">
+      Aplicar Filtro
+      <ids-icon>filter_base</ids-icon>
+    </button>
+  </ids-dialog-footer>
+</ids-side-sheet>

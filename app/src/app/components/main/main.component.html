@@ -1,0 +1,49 @@
+<mf-plataformaresseguro-mfe-wrapper>
+  @if (isContextValid) {
+  <div class="page-container">
+    @switch (paginaAtual.rota) { @case ('home') {
+    <home-page></home-page>
+    } @case ('companhia-ressegurada-home') {
+    <home-companhia-ressegurada></home-companhia-ressegurada>
+    } @case ('companhia-ressegurada-cadastro') {
+    <cadastro-companhia-ressegurada></cadastro-companhia-ressegurada>
+    } @case ('home-ressegurador') {
+    <home-ressegurador></home-ressegurador>
+    } @case ('detalhe-ressegurador') {
+    <detalhe-ressegurador></detalhe-ressegurador>
+    } @case ('home-broker') {
+    <home-broker></home-broker>
+    } @case ('detalhe-broker') {
+    <detalhe-broker></detalhe-broker>
+    } @case ('home-contrato') {
+    <home-contrato></home-contrato>
+    } @case ('detalhe-contrato') {
+    <detalhe-contrato></detalhe-contrato> 
+    } @default {
+    <div>Selecione uma página</div>
+    } }
+    <!-- Snackbar global -->
+    <app-snackbar></app-snackbar>
+  </div>
+
+  <footer>
+    <span>© 2026 - Plataforma de Resseguro - Itaú Unibanco S.A.</span>
+    <br />
+    <span>v0.16.0</span>
+  </footer>
+  } @if (!isContextValid) {
+  <!-- *  Alert * -->
+  @for (fail of listFails; track fail) {
+  <ids-alert
+    [show]="!isContextValid"
+    icon
+    variant="error"
+    [header]="fail.typeError"
+    class="ids-p-2"
+  >
+    <span>
+      {{ fail.message }}
+    </span>
+  </ids-alert>
+  } }
+</mf-plataformaresseguro-mfe-wrapper>

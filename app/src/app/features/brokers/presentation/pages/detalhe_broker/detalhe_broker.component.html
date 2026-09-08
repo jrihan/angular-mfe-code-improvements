@@ -1,0 +1,653 @@
+<div class="loading-overlay" *ngIf="isLoading">
+  <ids-loading
+    aria-live="polite"
+    aria-label="Carregando dados do broker"
+    size="XL"
+  >
+    <ids-icon size="XL">carrinho_outline</ids-icon>
+  </ids-loading>
+</div>
+
+<app-retry-state
+  *ngIf="shouldShowLoadState"
+  [title]="errorStateTitle"
+  [description]="errorStateDescription"
+  [showRetryAction]="showRetryState"
+  (retry)="retryLoadBrokerData()"
+  (back)="goBack()"
+></app-retry-state>
+
+<form [formGroup]="form" (ngSubmit)="salvar()" *ngIf="!shouldShowLoadState">
+  <header>
+    <span class="ids-insight">{{ title }}</span>
+
+    <div class="header-buttons">
+      <button
+        idsMainButton
+        type="button"
+        variant="secondary"
+        (click)="goBack()"
+      >
+        Cancelar
+        <ids-icon>close_base</ids-icon>
+      </button>
+
+      <button idsMainButton type="submit" [disabled]="!isSalvarHabilitado">
+        <ng-container>
+          Salvar
+          <ids-icon>save_base</ids-icon>
+        </ng-container>
+      </button>
+    </div>
+  </header>
+
+  <container-base title="Buscar" *ngIf="mode === 'create'">
+    <div
+      [formGroup]="searchForm"
+      class="horizontaly"
+      style="align-items: flex-end; gap: 12px; margin-bottom: 12px"
+    >
+      <ids-form-field label="Tipo de Documento" style="flex: 0.4">
+        <ids-select formControlName="tipoDocumento">
+          <ids-option
+            *ngFor="let option of tipoDocumentoOptions"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Número do Documento" style="flex: 2">
+        <input
+          idsInput
+          formControlName="numeroDocumento"
+          required
+          (input)="onSearchDocumentoInput($event)"
+        />
+      </ids-form-field>
+
+      <ids-form-field label="País" style="flex: 0.8">
+        <ids-select formControlName="pais">
+          <ids-option
+            *ngFor="let option of countryOptions"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <button
+        idsMainButton
+        type="button"
+        style="margin-bottom: 4px"
+        [disabled]="searchForm.invalid || isLoading"
+        (click)="buscarDadosCadastrais()"
+      >
+        <ng-container *ngIf="isLoading; else buscarLabel">
+          <ids-loading size="XS" aria-label="Buscando..."></ids-loading>
+        </ng-container>
+        <ng-template #buscarLabel>
+          Buscar
+          <ids-icon>search_base</ids-icon>
+        </ng-template>
+      </button>
+    </div>
+  </container-base>
+
+  <ng-container *ngIf="mode !== 'create' || isBuscaRealizada">
+    <container-base
+      title="Informações Básicas"
+      [showStatus]="mode !== 'visualize'"
+      [done]="isInformacoesBasicasCompletas"
+    >
+      <div class="horizontaly">
+        <ids-form-field label="Nome completo *">
+          <input idsInput formControlName="nomeCompleto" />
+        </ids-form-field>
+        <ids-form-field label="Nome fantasia">
+          <input idsInput formControlName="nomeFantasia" />
+        </ids-form-field>
+      </div>
+      <div class="horizontaly">
+        <ids-form-field label="Código SUSEP *">
+          <input
+            idsInput
+            formControlName="codigoSusep"
+            required
+            maxlength="5"
+            inputmode="numeric"
+            (input)="onSusepInput($event)"
+          />
+        </ids-form-field>
+      </div>
+      <div class="horizontaly">
+        <ids-form-field label="Tipo do Documento *">
+          <ids-select formControlName="tipoDocumento">
+            <ids-option
+              *ngFor="let option of tipoDocumentoOptions"
+              [value]="option.optValue"
+            >
+              {{ option.optLabel }}
+            </ids-option>
+          </ids-select>
+        </ids-form-field>
+        <ids-form-field label="Numero do Documento *">
+          <input
+            idsInput
+            formControlName="numeroDocumento"
+            required
+            (input)="onDocumentoInput($event)"
+          />
+        </ids-form-field>
+        <ids-form-field label="País *" style="flex: 0.8">
+          <ids-select formControlName="pais">
+            <ids-option
+              *ngFor="let option of countryOptions"
+              [value]="option.optValue"
+            >
+              {{ option.optLabel }}
+            </ids-option>
+          </ids-select>
+        </ids-form-field>
+      </div>
+    </container-base>
+
+    <container-base
+      title="Endereços"
+      [showStatus]="mode !== 'visualize'"
+      [done]="isEnderecoCompleto"
+      [showLeftHeader]="canAddEndereco"
+      buttonTitle="Adicionar Endereço"
+      buttonIcon="plus_base"
+      (buttonClick)="adicionarEndereco()"
+    >
+      <div
+        *ngIf="!enderecosFormArray.length"
+        class="ids-p-6"
+        style="text-align: center"
+      >
+        <p class="ids-body-text -small">Nenhum endereço cadastrado.</p>
+      </div>
+
+      <div formArrayName="enderecos">
+        <div
+          *ngFor="let endereco of enderecosFormArray.controls; let i = index"
+          [formGroupName]="i"
+          class="item-divider"
+        >
+          <div
+            class="item-header"
+            *ngIf="mode !== 'visualize'"
+            style="margin-top: 12px"
+          >
+            <h3>Endereço {{ i + 1 }}</h3>
+
+            <button
+              *ngIf="!isEnderecoBloqueado(i)"
+              idsMainButton
+              type="button"
+              variant="secondary"
+              (click)="removerEndereco(i)"
+            >
+              Remover Endereço
+              <ids-icon>trash_base</ids-icon>
+            </button>
+          </div>
+
+          <div class="horizontaly" style="gap: 12px">
+            <ids-form-field label="Tipo de Endereço *">
+              <ids-select formControlName="propositoEndereco">
+                <ids-option
+                  *ngFor="let option of addressTypeOptions"
+                  [value]="option.optValue"
+                >
+                  {{ option.optLabel }}
+                </ids-option>
+              </ids-select>
+            </ids-form-field>
+          </div>
+
+          <div class="horizontaly" style="gap: 12px">
+            <ids-form-field label="País *">
+              <input idsInput formControlName="pais" maxlength="2" />
+            </ids-form-field>
+
+            <!-- UF apenas para endereço nacional (BR). -->
+            <ids-form-field
+              label="UF *"
+              *ngIf="isPaisBrasil(endereco.get('pais')?.value)"
+            >
+              <input
+                idsInput
+                formControlName="uf"
+                maxlength="2"
+                (input)="onUfInput($event, i)"
+              />
+            </ids-form-field>
+
+            <ids-form-field label="Cidade *">
+              <input idsInput formControlName="cidade" />
+            </ids-form-field>
+
+            <!-- CEP apenas para endereço nacional (BR). -->
+            <ids-form-field
+              label="CEP *"
+              *ngIf="isPaisBrasil(endereco.get('pais')?.value)"
+            >
+              <input
+                idsInput
+                formControlName="cep"
+                maxlength="9"
+                (input)="onCepInput($event, i)"
+              />
+            </ids-form-field>
+          </div>
+
+          <div class="horizontaly" style="gap: 12px">
+            <ids-form-field label="Logradouro *">
+              <input idsInput formControlName="logradouro" />
+            </ids-form-field>
+
+            <ids-form-field label="Número *">
+              <input idsInput formControlName="numero" />
+            </ids-form-field>
+          </div>
+
+          <div class="horizontaly" style="gap: 12px">
+            <ids-form-field label="Complemento">
+              <input idsInput formControlName="complemento" />
+            </ids-form-field>
+
+            <ids-form-field label="Bairro *">
+              <input idsInput formControlName="bairro" />
+            </ids-form-field>
+          </div>
+
+          <div
+            class="horizontaly"
+            style="gap: 12px"
+            *ngIf="!isPaisBrasil(endereco.get('pais')?.value)"
+          >
+            <ids-form-field label="Região">
+              <input idsInput formControlName="regiao" />
+            </ids-form-field>
+
+            <ids-form-field label="Código de Área Postal">
+              <input idsInput formControlName="codigoAreaPostal" />
+            </ids-form-field>
+          </div>
+        </div>
+      </div>
+    </container-base>
+
+    <container-base
+      title="Telefones"
+      [showStatus]="mode !== 'visualize'"
+      [done]="isTelefoneCompleto"
+      [showLeftHeader]="canAddTelefone"
+      buttonTitle="Adicionar Telefone"
+      buttonIcon="plus_base"
+      (buttonClick)="adicionarTelefone()"
+    >
+      <div
+        *ngIf="!telefonesFormArray.length"
+        class="ids-p-6"
+        style="text-align: center"
+      >
+        <p class="ids-body-text -small">Nenhum telefone cadastrado.</p>
+      </div>
+
+      <div formArrayName="telefones">
+        <div
+          *ngFor="let tel of telefonesFormArray.controls; let i = index"
+          [formGroupName]="i"
+          class="item-divider"
+        >
+          <div
+            class="item-header"
+            *ngIf="mode !== 'visualize'"
+            style="margin-top: 12px"
+          >
+            <h3>Telefone {{ i + 1 }}</h3>
+
+            <button
+              *ngIf="!isTelefoneBloqueado(i)"
+              idsMainButton
+              type="button"
+              variant="secondary"
+              (click)="removerTelefone(i)"
+            >
+              Remover Telefone
+              <ids-icon>trash_base</ids-icon>
+            </button>
+          </div>
+
+          <div class="horizontaly" style="gap: 12px">
+            <ids-form-field label="Propósito do Telefone *">
+              <ids-select formControlName="propositoTelefone">
+                <ids-option
+                  *ngFor="let option of phonePurposeOptions"
+                  [value]="option.optValue"
+                >
+                  {{ option.optLabel }}
+                </ids-option>
+              </ids-select>
+            </ids-form-field>
+            <ids-form-field label="Tipo de Telefone *">
+              <ids-select formControlName="tipoTelefone">
+                <ids-option
+                  *ngFor="let option of phoneTypeOptions"
+                  [value]="option.optValue"
+                >
+                  {{ option.optLabel }}
+                </ids-option>
+              </ids-select>
+            </ids-form-field>
+          </div>
+
+          <div class="horizontaly" style="gap: 12px">
+            <ids-form-field label="DDI *">
+              <input
+                idsInput
+                formControlName="ddi"
+                maxlength="5"
+                (input)="onDdiInput($event, i)"
+              />
+            </ids-form-field>
+
+            <ids-form-field label="DDD *">
+              <input
+                idsInput
+                formControlName="ddd"
+                maxlength="2"
+                (input)="onDddInput($event, i)"
+              />
+            </ids-form-field>
+
+            <ids-form-field label="Número *">
+              <input
+                idsInput
+                formControlName="numero"
+                maxlength="10"
+                (input)="onTelefoneNumeroInput($event, i)"
+              />
+            </ids-form-field>
+          </div>
+        </div>
+      </div>
+    </container-base>
+
+    <container-base
+      title="E-mails"
+      [showStatus]="mode !== 'visualize'"
+      [done]="isEmailCompleto"
+      [showLeftHeader]="canAddEmail"
+      buttonTitle="Adicionar E-mail"
+      buttonIcon="plus_base"
+      (buttonClick)="adicionarEmail()"
+    >
+      <div
+        *ngIf="!emailsFormArray.length"
+        class="ids-p-6"
+        style="text-align: center"
+      >
+        <p class="ids-body-text -small">Nenhum e-mail cadastrado.</p>
+      </div>
+
+      <div formArrayName="emails">
+        <div
+          *ngFor="let mail of emailsFormArray.controls; let i = index"
+          [formGroupName]="i"
+          class="item-divider"
+        >
+          <div
+            class="item-header"
+            *ngIf="mode !== 'visualize'"
+            style="margin-top: 12px"
+          >
+            <h3>E-mail {{ i + 1 }}</h3>
+
+            <button
+              *ngIf="!isEmailBloqueado(i)"
+              idsMainButton
+              type="button"
+              variant="secondary"
+              (click)="removerEmail(i)"
+            >
+              Remover E-mail
+              <ids-icon>trash_base</ids-icon>
+            </button>
+          </div>
+
+          <div class="horizontaly" style="gap: 12px">
+            <ids-form-field label="Propósito do E-mail *">
+              <ids-select formControlName="propositoEmail">
+                <ids-option
+                  *ngFor="let option of mailPurposeOptions"
+                  [value]="option.optValue"
+                >
+                  {{ option.optLabel }}
+                </ids-option>
+              </ids-select>
+            </ids-form-field>
+          </div>
+
+          <div class="horizontaly" style="gap: 12px">
+            <ids-form-field label="Nome do Contato">
+              <input idsInput formControlName="nomeContato" />
+            </ids-form-field>
+
+            <ids-form-field label="E-mail *">
+              <input idsInput formControlName="email" type="email" />
+            </ids-form-field>
+          </div>
+        </div>
+      </div>
+    </container-base>
+
+    <container-base
+      title="Contas"
+      [showStatus]="mode !== 'visualize'"
+      [done]="isContaCompleta"
+      [showLeftHeader]="mode !== 'visualize'"
+      buttonTitle="Nova Conta"
+      buttonIcon="plus_base"
+      (buttonClick)="adicionarConta()"
+    >
+      <div
+        *ngIf="!dadosConta.length"
+        class="ids-p-6"
+        style="text-align: center"
+      >
+        <p class="ids-body-text -small">Nenhuma conta cadastrada.</p>
+      </div>
+
+      <div *ngIf="dadosConta.length" style="margin-bottom: 24px">
+        <ids-table-wrapper>
+          <table idsTable [dataSource]="dadosContaPaginada">
+            <ng-container idsColumnDef="conta_principal">
+              <th idsHeaderCell *idsHeaderCellDef style="width: 120px">
+                Conta Principal
+              </th>
+              <td idsCell *idsCellDef="let row">
+                <input
+                  type="checkbox"
+                  [checked]="row.contaSelecionada"
+                  [disabled]="mode === 'visualize'"
+                  (change)="checkRow(row)"
+                />
+              </td>
+            </ng-container>
+
+            <ng-container idsColumnDef="codigo_banco">
+              <th idsHeaderCell *idsHeaderCellDef idsSort>Código Banco</th>
+              <td idsCell *idsCellDef="let row">
+                {{ row.codigoBanco }}
+              </td>
+            </ng-container>
+
+            <ng-container idsColumnDef="codigo_agencia">
+              <th idsHeaderCell *idsHeaderCellDef idsSort>Código Agência</th>
+              <td idsCell *idsCellDef="let row">
+                {{ row.codigoAgencia }}
+              </td>
+            </ng-container>
+
+            <ng-container idsColumnDef="tipo_conta">
+              <th idsHeaderCell *idsHeaderCellDef idsSort>Tipo da Conta</th>
+              <td idsCell *idsCellDef="let row">
+                {{ obterNomeTipoConta(row.codigoTipoConta) }}
+              </td>
+            </ng-container>
+
+            <ng-container idsColumnDef="codigo_conta">
+              <th idsHeaderCell *idsHeaderCellDef idsSort>Código Conta</th>
+              <td idsCell *idsCellDef="let row">
+                {{ row.codigoConta }}
+              </td>
+            </ng-container>
+
+            <ng-container idsColumnDef="dac">
+              <th idsHeaderCell *idsHeaderCellDef idsSort>DAC</th>
+              <td idsCell *idsCellDef="let row">
+                {{ row.dac }}
+              </td>
+            </ng-container>
+
+            <ng-container idsColumnDef="acao">
+              <th idsHeaderCell *idsHeaderCellDef>Ação</th>
+              <td idsCell *idsCellDef="let row; let i = index">
+                <div style="display: flex; gap: 8px">
+                  <button
+                    type="button"
+                    style="background: none; border: none; cursor: pointer"
+                    title="Editar Conta"
+                    (click)="editarConta(i)"
+                  >
+                    <ids-icon style="color: #ea7000">edit_base</ids-icon>
+                  </button>
+                  <button
+                    type="button"
+                    style="background: none; border: none; cursor: pointer"
+                    title="Excluir Conta"
+                    (click)="removerConta(i)"
+                  >
+                    <ids-icon style="color: #b30000">trash_base</ids-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr idsHeaderRow *idsHeaderRowDef="displayedColumnsContas"></tr>
+            <tr
+              idsRow
+              *idsRowDef="let row; columns: displayedColumnsContas"
+            ></tr>
+          </table>
+
+          <ids-pagination
+            [total]="dadosConta.length"
+            [currentPageSize]="pageSize"
+            [pageSizes]="pageSizes"
+            [currentPage]="currentPage"
+            (paginate)="onPaginate($event)"
+          ></ids-pagination>
+        </ids-table-wrapper>
+      </div>
+
+      <div
+        *ngIf="showContaForm && mode !== 'visualize'"
+        class="item-divider"
+        style="margin-top: 24px"
+      >
+        <h3 style="margin-top: 0; margin-bottom: 16px">
+          {{ editingContaIndex !== null ? "Editar Conta" : "Nova Conta" }}
+        </h3>
+        <form [formGroup]="contaForm">
+          <div class="horizontaly">
+            <ids-form-field label="Banco *">
+              <ids-select formControlName="banco">
+                <ids-option
+                  *ngFor="let banco of instituicoes_financeiras?.data"
+                  [value]="banco.codigo"
+                >
+                  {{ banco.codigo }} - {{ banco.nome }}
+                </ids-option>
+              </ids-select>
+            </ids-form-field>
+
+            <ids-form-field label="Agência *">
+              <input
+                idsInput
+                formControlName="agencia"
+                maxlength="4"
+                (input)="onAgenciaInput($event)"
+              />
+            </ids-form-field>
+
+            <ids-form-field label="Código Conta *">
+              <input
+                idsInput
+                formControlName="conta"
+                maxlength="11"
+                (input)="onContaInput($event)"
+              />
+            </ids-form-field>
+
+            <ids-form-field label="DAC *">
+              <input
+                idsInput
+                formControlName="dac"
+                maxlength="2"
+                (input)="onDacInput($event)"
+              />
+            </ids-form-field>
+
+            <ids-form-field label="Tipo da conta *">
+              <ids-select formControlName="tipo">
+                <ids-option
+                  *ngFor="let tipo of tiposConta"
+                  [value]="tipo.codigo"
+                >
+                  {{ tipo.nome }}
+                </ids-option>
+              </ids-select>
+            </ids-form-field>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              gap: 12px;
+              margin-top: 16px;
+            "
+          >
+            <button
+              idsMainButton
+              type="button"
+              variant="secondary"
+              (click)="cancelarEdicaoConta()"
+            >
+              Cancelar
+              <ids-icon>close_base</ids-icon>
+            </button>
+
+            <button
+              idsMainButton
+              type="button"
+              variant="secondary"
+              [disabled]="contaForm.invalid"
+              (click)="salvarConta()"
+            >
+              Salvar Conta
+              <ids-icon>save_base</ids-icon>
+            </button>
+          </div>
+        </form>
+      </div>
+    </container-base>
+  </ng-container>
+</form>

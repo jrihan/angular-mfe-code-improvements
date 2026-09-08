@@ -1,0 +1,242 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "mf-plataformaresseguro-mfe": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "serve-cypress": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "local": {
+              "browserTarget": "mf-plataformaresseguro-mfe:build:local"
+            },
+            "development": {
+              "browserTarget": "mf-plataformaresseguro-mfe:build:development"
+            },
+            "homologation": {
+              "browserTarget": "mf-plataformaresseguro-mfe:build:homologation"
+            },
+            "production": {
+              "browserTarget": "mf-plataformaresseguro-mfe:build:production"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "publicHost": "http://localhost:5000",
+            "port": 5000
+          }
+        },
+        "cypress-run": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "mf-plataformaresseguro-mfe:serve-cypress"
+          },
+          "configurations": {
+            "local": {
+              "devServerTarget": "mf-plataformaresseguro-mfe:serve-cypress:local"
+            },
+            "development": {
+              "browserTarget": "mf-plataformaresseguro-mfe:build:development"
+            },
+            "homologation": {
+              "browserTarget": "mf-plataformaresseguro-mfe:build:homologation"
+            },
+            "production": {
+              "browserTarget": "mf-plataformaresseguro-mfe:build:production"
+            }
+          }
+        },
+        "cypress-open": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "watch": true,
+            "headless": false
+          }
+        },
+        "e2e": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "mf-plataformaresseguro-mfe:serve-cypress",
+            "watch": true,
+            "headless": false
+          },
+          "configurations": {
+            "local": {
+              "devServerTarget": "mf-plataformaresseguro-mfe:serve-cypress:local"
+            },
+            "development": {
+              "devServerTarget": "mf-plataformaresseguro-mfe:serve-cypress:development"
+            },
+            "homologation": {
+              "devServerTarget": "mf-plataformaresseguro-mfe:serve-cypress:homologation"
+            },
+            "production": {
+              "devServerTarget": "mf-plataformaresseguro-mfe:serve-cypress:production"
+            }
+          }
+        },
+        "build": {
+          "builder": "ngx-build-plus:browser",
+          "options": {
+            "allowedCommonJsDependencies": [
+              "@ids/tools",
+              "@quickweb/mfe-context"
+            ],
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": ["zone.js"],
+            "tsConfig": "tsconfig.federation.json",
+            "statsJson": true,
+            "outputHashing": "none",
+            "optimization": true,
+            "sourceMap": false,
+            "namedChunks": false,
+            "aot": true,
+            "extractLicenses": true,
+            "vendorChunk": false,
+            "buildOptimizer": true,
+            "inlineStyleLanguage": "scss",
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": [],
+            "scripts": [],
+            "extraWebpackConfig": "webpack.config.js"
+          },
+          "configurations": {
+            "local": {
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["src/styles/local"]
+              }
+            },
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "none",
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "stylePreprocessorOptions": {
+                "includePaths": ["src/styles/prod"]
+              }
+            },
+            "development": {
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["src/styles/dev"]
+              }
+            },
+            "homologation": {
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.hom.ts"
+                }
+              ],
+              "stylePreprocessorOptions": {
+                "includePaths": ["src/styles/hom"]
+              }
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "serve": {
+          "builder": "ngx-build-plus:dev-server",
+          "configurations": {
+            "local": {
+              "buildTarget": "mf-plataformaresseguro-mfe:build:local"
+            },
+            "production": {
+              "buildTarget": "mf-plataformaresseguro-mfe:build:production"
+            },
+            "development": {
+              "buildTarget": "mf-plataformaresseguro-mfe:build:development"
+            },
+            "homologation": {
+              "buildTarget": "mf-plataformaresseguro-mfe:build:homologation"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "publicHost": "http://localhost:5000",
+            "extraWebpackConfig": "webpack.config.js",
+            "port": 5000
+          }
+        },
+        "extract-i18n": {
+          "builder": "ngx-build-plus:extract-i18n",
+          "options": {
+            "buildTarget": "mf-plataformaresseguro-mfe:build"
+          }
+        },
+        "test": {
+          "builder": "ngx-build-plus:test",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": [],
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": ["src/favicon.ico", "src/assets"],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "schematicCollections": ["@angular-eslint/schematics"],
+    "analytics": false
+  }
+}

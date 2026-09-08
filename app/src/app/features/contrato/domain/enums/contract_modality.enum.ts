@@ -1,0 +1,4 @@
+export enum ContractModalityEnum {
+  PROPORCIONAL = 'PROPORCIONAL',
+  NAOPROPORCIONAL = 'NAOPROPORCIONAL',
+}

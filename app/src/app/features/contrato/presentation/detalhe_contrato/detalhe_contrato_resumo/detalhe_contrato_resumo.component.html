@@ -1,0 +1,116 @@
+<container-base title="Valores por Ressegurador">
+  <div class="faixa-box" *ngFor="let faixa of faixas">
+    <div class="faixa-topo">
+      <span class="faixa-nome">{{ faixa.titulo }}</span>
+
+      <div class="faixa-total">
+        <span class="faixa-total-label">Valor Total Cedente</span>
+        <span class="faixa-total-valor">{{
+          formatarMoeda(faixa.valorTotalCedente)
+        }}</span>
+      </div>
+
+      <button type="button" class="icon-button" (click)="toggleFaixa(faixa)">
+        <span
+          class="arrow"
+          [style.transform]="
+            faixa.expanded ? 'rotate(0deg)' : 'rotate(-180deg)'
+          "
+        >
+          <ids-icon>arrow_down_base</ids-icon>
+        </span>
+      </button>
+    </div>
+
+    <ids-table-wrapper *ngIf="faixa.expanded">
+      <table idsTable [dataSource]="faixa.linhas">
+        <ng-container
+          *ngFor="let coluna of colunas"
+          [idsColumnDef]="coluna.key"
+        >
+          <th idsHeaderCell *idsHeaderCellDef idsSort>{{ coluna.label }}</th>
+          <td idsCell *idsCellDef="let linha">
+            {{ formatarCelula(coluna, linha) }}
+          </td>
+          <td idsFooterCell *idsFooterCellDef>
+            {{ formatarCelula(coluna, faixa.total) }}
+          </td>
+        </ng-container>
+
+        <tr idsHeaderRow *idsHeaderRowDef="colunaKeys"></tr>
+        <tr idsRow *idsRowDef="let row; columns: colunaKeys"></tr>
+        <tr
+          idsFooterRow
+          *idsFooterRowDef="colunaKeys"
+          class="linha-total"
+        ></tr>
+      </table>
+    </ids-table-wrapper>
+  </div>
+
+  <div class="faixa-box">
+    <div class="faixa-topo">
+      <span class="faixa-nome">Totais Gerais</span>
+
+      <div class="faixa-total">
+        <span class="faixa-total-label">Total Geral Cedente</span>
+        <span class="faixa-total-valor">{{
+          formatarMoeda(totalGeralCedente)
+        }}</span>
+      </div>
+
+      <button type="button" class="icon-button" (click)="toggleTotaisGerais()">
+        <span
+          class="arrow"
+          [style.transform]="
+            expandedTotaisGerais ? 'rotate(0deg)' : 'rotate(-180deg)'
+          "
+        >
+          <ids-icon>arrow_down_base</ids-icon>
+        </span>
+      </button>
+    </div>
+
+    <ids-table-wrapper *ngIf="expandedTotaisGerais">
+      <table idsTable [dataSource]="totaisGeraisDataSource">
+        <ng-container
+          *ngFor="let coluna of colunas"
+          [idsColumnDef]="coluna.key"
+        >
+          <th idsHeaderCell *idsHeaderCellDef idsSort>{{ coluna.label }}</th>
+          <td idsCell *idsCellDef="let linha">
+            {{ formatarCelula(coluna, linha) }}
+          </td>
+        </ng-container>
+
+        <tr idsHeaderRow *idsHeaderRowDef="colunaKeys"></tr>
+        <tr idsRow *idsRowDef="let row; columns: colunaKeys"></tr>
+      </table>
+    </ids-table-wrapper>
+  </div>
+</container-base>
+
+<container-base title="Histórico de Aprovação dos Contratos">
+  <div class="historico-grid">
+    <div
+      class="historico-card"
+      *ngFor="let item of historicoAprovacao"
+      [ngClass]="'status-' + item.status"
+    >
+      <span class="historico-icone" [ngClass]="'icone-' + item.status">
+        <ids-icon>{{ iconePorStatus(item.status) }}</ids-icon>
+      </span>
+
+      <div class="historico-info" *ngIf="item.nome; else semRegistro">
+        <span class="historico-papel">{{ item.papel }}</span>
+        <span class="historico-nome">{{ item.nome }}</span>
+        <span class="historico-email">{{ item.email }}</span>
+        <span class="historico-data">{{ item.dataHora }}</span>
+      </div>
+
+      <ng-template #semRegistro>
+        <span class="historico-sem-registro">{{ item.papel }}</span>
+      </ng-template>
+    </div>
+  </div>
+</container-base>

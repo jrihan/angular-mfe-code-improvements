@@ -1,0 +1,72 @@
+.container-base {
+  border: 1px solid #0000661a;
+  border-radius: 12px;
+  padding: 16px;
+  background-color: #fff;
+  margin: 1.5rem 0;
+
+  &.is-done {
+    border-color: #0b5b3840;
+    box-shadow: inset 0 0 0 1px #0b5b3820;
+  }
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 12px;
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+    justify-content: flex-end;
+  }
+}
+/* TÍTULO */
+.title {
+  font: 500 1.25rem/1.25 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  position: relative;
+  padding-left: 14px;
+}
+
+.title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.12em;
+  width: 3px;
+  height: 1.1em;
+  background: #ff5200;
+  border-radius: 2px;
+}
+
+/* STATUS */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  height: 26px;
+  padding: 0 10px;
+
+  font: 400 0.8rem/1.25 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background-color: #0b5b38;
+  color: #fff;
+
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.status-done {
+  background-color: #0b5b38;
+  color: #fff;
+}
+
+/* CONTEÚDO */
+.content {
+  padding-top: 12px;
+}

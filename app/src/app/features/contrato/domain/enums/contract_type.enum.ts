@@ -1,0 +1,5 @@
+export enum ContractTypeEnum {
+  INDIVIDUAL = 'INDIVIDUAL',
+  COLLECTIVE = 'COLLECTIVE',
+  AUTOMATICO = 'AUTOMATICO',
+}

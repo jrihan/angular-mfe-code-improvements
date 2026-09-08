@@ -1,0 +1,8 @@
+@import "@ids/tokens/itau_bba/tokens.scss";
+@import "../_base-tokens.scss";
+@import "../_webcomponent-name.scss";
+
+#{$webcomponent-wrapper-name}.ids-theme-itau_bba,
+.#{$webcomponent-name}.ids-theme-itau_bba {
+    @include export-ids-tokens-as-css-vars;
+}

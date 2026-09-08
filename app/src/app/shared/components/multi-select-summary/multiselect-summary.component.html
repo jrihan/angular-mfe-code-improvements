@@ -1,0 +1,20 @@
+<div class="summary" *ngIf="options.length">
+  <div class="summary-label">{{ label }}:</div>
+
+  <div class="chips">
+    <span class="chip" *ngFor="let option of options">
+      {{ option.label }}
+      <button
+        type="button"
+        aria-label="Remover item"
+        (click)="remove.emit(option)"
+      >
+        ×
+      </button>
+    </span>
+  </div>
+
+  <small class="hint">
+    Clique no ícone X para remover um item da seleção
+  </small>
+</div>

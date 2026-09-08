@@ -1,0 +1,126 @@
+.horizontaly {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+
+  ids-form-field {
+    flex: 1;
+  }
+
+  .checkbox-field {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  height: 26px;
+  padding: 0 10px;
+
+  font: 400 0.8rem/1.25 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.status-done {
+  background-color: #0b5b38;
+  color: #fff;
+}
+
+.ressegurador-card {
+  border: 1px solid #0000661a;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.ressegurador-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ressegurador-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ressegurador-nome {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.ressegurador-header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 0.2s;
+  font-size: 1.5em;
+}
+
+.ressegurador-content {
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.condicoes-titulo {
+  margin: 0;
+  font-weight: 600;
+}
+
+.condicoes-grupo {
+  align-items: flex-start;
+}
+
+.condicao-coluna {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.condicao-subtitulo {
+  margin: 0;
+  font-weight: 500;
+}
+
+.faixa {
+  border: 1px solid #ff5200;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.faixa-titulo {
+  font-weight: 500;
+  font-size: 0.875rem;
+}

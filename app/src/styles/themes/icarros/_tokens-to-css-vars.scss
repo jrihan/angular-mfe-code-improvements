@@ -1,0 +1,8 @@
+@import "@ids/tokens/icarros/tokens.scss";
+@import "../_base-tokens.scss";
+@import "../_webcomponent-name.scss";
+
+#{$webcomponent-wrapper-name}.ids-theme-icarros,
+.#{$webcomponent-name}.ids-theme-icarros {
+    @include export-ids-tokens-as-css-vars;
+}

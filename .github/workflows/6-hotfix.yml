@@ -1,0 +1,11 @@
+name: "6 - [PROD] Hotfix"
+
+on:
+  push:
+    branches:
+      - hotfix**
+
+jobs:
+  app:
+    uses: itau-corp/itau-up2-nested-reusable-nodejs-s3/.github/workflows/hotfix.yml@v2-stk-wk
+    secrets: inherit

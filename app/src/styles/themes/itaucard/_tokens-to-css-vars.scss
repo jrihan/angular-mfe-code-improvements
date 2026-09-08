@@ -1,0 +1,8 @@
+@import "@ids/tokens/itaucard/tokens.scss";
+@import "../_base-tokens.scss";
+@import "../_webcomponent-name.scss";
+
+#{$webcomponent-wrapper-name}.ids-theme-itaucard,
+.#{$webcomponent-name}.ids-theme-itaucard {
+    @include export-ids-tokens-as-css-vars;
+}

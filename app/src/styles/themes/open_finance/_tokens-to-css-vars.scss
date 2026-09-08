@@ -1,0 +1,8 @@
+@import "@ids/tokens/open_finance/tokens.scss";
+@import "../_base-tokens.scss";
+@import "../_webcomponent-name.scss";
+
+#{$webcomponent-wrapper-name}.ids-theme-open_finance,
+.#{$webcomponent-name}.ids-theme-open_finance {
+    @include export-ids-tokens-as-css-vars;
+}

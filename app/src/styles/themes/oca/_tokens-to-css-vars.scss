@@ -1,0 +1,8 @@
+@import "@ids/tokens/oca/tokens.scss";
+@import "../_base-tokens.scss";
+@import "../_webcomponent-name.scss";
+
+#{$webcomponent-wrapper-name}.ids-theme-oca,
+.#{$webcomponent-name}.ids-theme-oca {
+    @include export-ids-tokens-as-css-vars;
+}

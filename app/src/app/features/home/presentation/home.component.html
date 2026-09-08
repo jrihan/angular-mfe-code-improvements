@@ -1,0 +1,74 @@
+<section class="title">
+  <span class="ids-title -bold">Hub Resseguros Itaú</span>
+</section>
+
+<section class="cards-grid">
+  <card-base-component
+    title="Resseguros prestes a vencer"
+    value="0"
+    icon="warning_base"
+    accentColor="#FFCC00"
+    [clickable]="true"
+  />
+  <card-base-component
+    title="Apólices excederam cobertura"
+    value="0"
+    accentColor="#CC0000"
+    [clickable]="true"
+    icon="doc_base"
+  />
+  <card-base-component
+    title="Novos produtos de resseguros"
+    value="0"
+    accentColor="#001FBD"
+    [clickable]="true"
+    icon="positive_record_base"
+  />
+</section>
+
+<container-base title="Acesso Rápido">
+  <div class="grid">
+    <app-quick-access-card
+      icon="insurance_guarantee_base"
+      label="Companhias Resseguradas"
+      (quickAccessClick)="goTo('companhia-ressegurada-home')"
+    ></app-quick-access-card>
+    <app-quick-access-card
+      icon="extra_protection_base"
+      label="Cadastro de Ressegurador"
+      (quickAccessClick)="goTo('home-ressegurador')"
+    ></app-quick-access-card>
+    <app-quick-access-card
+      icon="user_executive_base"
+      label="Cadastro de Broker"
+      (quickAccessClick)="goTo('home-broker')"
+    ></app-quick-access-card>
+    <app-quick-access-card
+      icon="plus_base"
+      label="Cadastro de Contrato"
+      (quickAccessClick)="goTo('home-contrato')"
+    ></app-quick-access-card>
+
+    <app-quick-access-card
+      icon="user_group_base"
+      label="Rateio"
+      (quickAccessClick)="goTo('rateio-novo')"
+      [disabled]="true"
+    ></app-quick-access-card>
+    <app-quick-access-card
+      icon="coin_base"
+      label="Pagamentos"
+      [disabled]="true"
+    ></app-quick-access-card>
+    <app-quick-access-card
+      icon="warning_base"
+      label="Sinistros"
+      [disabled]="true"
+    ></app-quick-access-card>
+    <app-quick-access-card
+      icon="open_finance_base"
+      label="Dashboard"
+      [disabled]="true"
+    ></app-quick-access-card>
+  </div>
+</container-base>

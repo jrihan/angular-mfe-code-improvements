@@ -1,0 +1,8 @@
+@import "@ids/tokens/area_de_pessoas/tokens.scss";
+@import "../_base-tokens.scss";
+@import "../_webcomponent-name.scss";
+
+#{$webcomponent-wrapper-name}.ids-theme-area_de_pessoas,
+.#{$webcomponent-name}.ids-theme-area_de_pessoas {
+    @include export-ids-tokens-as-css-vars;
+}

@@ -1,0 +1,297 @@
+<container-base title="Informações Básicas" [done]="basicInformationForm.valid">
+  <form [formGroup]="basicInformationForm" autocomplete="off">
+    <div class="horizontaly">
+      <ids-form-field label="Nome do Contrato">
+        <input idsInput formControlName="contract_name" />
+      </ids-form-field>
+
+      <ids-form-field label="Vigência">
+        <input idsInput idsDatepickerRange formControlName="vigencia" />
+      </ids-form-field>
+    </div>
+
+    <div class="horizontaly">
+      <ids-form-field label="Moeda">
+        <ids-select multiple formControlName="moeda">
+          <ids-option *ngFor="let coin of currency" [value]="coin.optValue">
+            {{ coin.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Abrangência Territorial">
+        <ids-select formControlName="abrangenciaTerritorial">
+          <ids-option
+            *ngFor="let option of territorialCoverage"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Tipo do Contrato">
+        <ids-select formControlName="tipoDeContrato">
+          <ids-option
+            *ngFor="let option of contractType"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+    </div>
+
+    <div class="horizontaly">
+      <ids-form-field label="Modalidade de Contrato">
+        <ids-select formControlName="modalidadeDeContrato">
+          <ids-option
+            *ngFor="let option of contractModalities"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Submodalidade">
+        <ids-select multiple formControlName="submodalidade">
+          <ids-option
+            *ngFor="let option of contractSubModalities"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+
+      <ids-form-field label="Base de Cobertura">
+        <ids-select formControlName="baseDeCobertura">
+          <ids-option
+            *ngFor="let option of baseDeCobertura"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+    </div>
+
+    <div class="horizontaly">
+      <ids-form-field label="Companhia">
+        <ids-select multiple formControlName="companhia">
+          <ids-option
+            *ngFor="let option of defaultOption"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+      <ids-form-field label="Grupo">
+        <ids-select multiple formControlName="grupo">
+          <ids-option
+            *ngFor="let option of defaultOption"
+            [value]="option.optValue"
+          >
+            {{ option.optLabel }}
+          </ids-option>
+        </ids-select>
+      </ids-form-field>
+    </div>
+  </form>
+</container-base>
+
+<container-base title="Cláusulas" [done]="clausesForm.valid">
+  <form [formGroup]="clausesForm">
+    <ids-form-selection-group inline>
+      <ids-form-selection>
+        <input type="checkbox" formControlName="arbitragem" idsCheckbox />
+        Arbitragem
+      </ids-form-selection>
+
+      <ids-form-selection>
+        <input type="checkbox" formControlName="seguirASorte" idsCheckbox />
+        Seguir a Sorte
+      </ids-form-selection>
+
+      <ids-form-selection>
+        <input type="checkbox" formControlName="exclusao" idsCheckbox />
+        Exclusão
+      </ids-form-selection>
+
+      <ids-form-selection>
+        <input type="checkbox" formControlName="intermediacao" idsCheckbox />
+        Intermediação
+      </ids-form-selection>
+    </ids-form-selection-group>
+  </form>
+</container-base>
+
+<container-base
+  title="Limite Automático de Subscrição"
+  [done]="limiteAutomaticoSubscricao.valid"
+>
+  <form [formGroup]="limiteAutomaticoSubscricao">
+    <div class="horizontaly">
+      <ids-form-field
+        label="Vida/CPF"
+        description="Inclui Vida Individual, Prestamista Pessoa Física, Capital Global e Acidentes Pessoais."
+      >
+        <input
+          idsInput
+          idsMask="currency"
+          [config]="config"
+          announce
+          formControlName="vidaCpf"
+        />
+      </ids-form-field>
+      <ids-form-field label="Previdência Pessoa Física">
+        <input
+          idsInput
+          idsMask="currency"
+          [config]="config"
+          announce
+          formControlName="previdenciaPessoaFisica"
+        />
+      </ids-form-field>
+      <ids-form-field label="Previdência Pessoa Juridica">
+        <input
+          idsInput
+          idsMask="currency"
+          [config]="config"
+          announce
+          formControlName="previdenciaPessoaJuridica"
+        />
+      </ids-form-field>
+      <ids-form-field label="Prestamista Pessoa Jurídica/Apólice">
+        <input
+          idsInput
+          idsMask="currency"
+          [config]="config"
+          announce
+          formControlName="prestamistaPessoaJuridicaApolice"
+        />
+      </ids-form-field>
+    </div>
+  </form>
+</container-base>
+
+<container-base title="Ramos" [done]="ramosForm.valid">
+  <h4 class="ramo-subtitle">Por Risco</h4>
+
+  <div class="horizontaly">
+    <div class="ramo-field">
+      <label class="ramo-label">Ramo Real <span class="required">*</span></label>
+      <app-multiselect
+        [selected]="ramoRealPorRisco"
+        (selectionChange)="ramoRealPorRisco = $event"
+      >
+        <app-multiselect-option
+          *ngFor="let ramo of ramosDisponiveis"
+          [value]="ramo.value"
+          [label]="ramo.label"
+        ></app-multiselect-option>
+      </app-multiselect>
+    </div>
+
+    <div class="ramo-field">
+      <label class="ramo-label">Ramo Regedor <span class="required">*</span></label>
+      <app-multiselect
+        [selected]="ramoRegedorPorRisco"
+        (selectionChange)="ramoRegedorPorRisco = $event"
+      >
+        <app-multiselect-option
+          *ngFor="let ramo of ramosDisponiveis"
+          [value]="ramo.value"
+          [label]="ramo.label"
+        ></app-multiselect-option>
+      </app-multiselect>
+    </div>
+  </div>
+
+  <div class="horizontaly">
+    <app-multiselect-summary
+      label="Ramos selecionados"
+      [options]="ramoRealPorRisco"
+      (remove)="removeRamoRealPorRisco($event)"
+    ></app-multiselect-summary>
+
+    <app-multiselect-summary
+      label="Ramos Correspondentes"
+      [options]="ramoRegedorPorRisco"
+      (remove)="removeRamoRegedorPorRisco($event)"
+    ></app-multiselect-summary>
+  </div>
+
+  <h4 class="ramo-subtitle">Por Evento</h4>
+
+  <div class="horizontaly">
+    <div class="ramo-field">
+      <label class="ramo-label">Ramo Real <span class="required">*</span></label>
+      <app-multiselect
+        [selected]="ramoRealPorEvento"
+        (selectionChange)="ramoRealPorEvento = $event"
+      >
+        <app-multiselect-option
+          *ngFor="let ramo of ramosDisponiveis"
+          [value]="ramo.value"
+          [label]="ramo.label"
+        ></app-multiselect-option>
+      </app-multiselect>
+    </div>
+
+    <div class="ramo-field">
+      <label class="ramo-label">Ramo Regedor <span class="required">*</span></label>
+      <app-multiselect
+        [selected]="ramoRegedorPorEvento"
+        (selectionChange)="ramoRegedorPorEvento = $event"
+      >
+        <app-multiselect-option
+          *ngFor="let ramo of ramosDisponiveis"
+          [value]="ramo.value"
+          [label]="ramo.label"
+        ></app-multiselect-option>
+      </app-multiselect>
+    </div>
+  </div>
+
+  <div class="horizontaly">
+    <app-multiselect-summary
+      label="Ramos selecionados"
+      [options]="ramoRealPorEvento"
+      (remove)="removeRamoRealPorEvento($event)"
+    ></app-multiselect-summary>
+
+    <app-multiselect-summary
+      label="Ramos Correspondentes"
+      [options]="ramoRegedorPorEvento"
+      (remove)="removeRamoRegedorPorEvento($event)"
+    ></app-multiselect-summary>
+  </div>
+</container-base>
+
+<container-base title="Garantias" [done]="garantiasForm.valid">
+  <div class="ramo-field">
+    <label class="ramo-label">Ramo Real <span class="required">*</span></label>
+    <app-multiselect
+      [selected]="garantiasSelecionadas"
+      (selectionChange)="garantiasSelecionadas = $event"
+    >
+      <app-multiselect-option
+        *ngFor="let garantia of garantiasDisponiveis"
+        [value]="garantia.value"
+        [label]="garantia.label"
+      ></app-multiselect-option>
+    </app-multiselect>
+    <small class="ramo-hint"
+      >Selecione as garantias que deseja incluir no contrato</small
+    >
+  </div>
+
+  <app-multiselect-summary
+    label="Garantias selecionadas"
+    [options]="garantiasSelecionadas"
+    (remove)="removeGarantia($event)"
+  ></app-multiselect-summary>
+</container-base>

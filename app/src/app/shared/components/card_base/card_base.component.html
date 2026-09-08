@@ -1,0 +1,21 @@
+<article
+  class="card"
+  [ngClass]="{ clickable }"
+  [style.--accent]="accentColor"
+  role="group"
+  aria-label="Card informativo"
+>
+  <div class="content">
+    <h3 class="title" [attr.title]="title">{{ title }}</h3>
+    <div class="value" aria-live="polite">{{ value }}</div>
+  </div>
+
+  <div
+    class="icon-wrap"
+    *ngIf="icon !== 'none'"
+    aria-hidden="true"
+    [ngClass]="{ 'is-round': roundIcon }"
+  >
+    <ids-icon size="XL" variant="neutral">{{ icon }}</ids-icon>
+  </div>
+</article>

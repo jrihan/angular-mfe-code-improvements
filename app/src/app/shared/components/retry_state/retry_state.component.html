@@ -1,0 +1,27 @@
+<section class="retry-state">
+  <div class="retry-state__icon" aria-hidden="true">
+    <ids-icon size="XL">error_circle_base</ids-icon>
+  </div>
+
+  <div class="retry-state__content">
+    <h2>{{ title }}</h2>
+    <p>{{ description }}</p>
+  </div>
+
+  <div class="retry-state__actions">
+    <button idsMainButton type="button" variant="secondary" (click)="onBack()">
+      {{ backLabel }}
+      <ids-icon>arrow_left_base</ids-icon>
+    </button>
+
+    <button
+      idsMainButton
+      type="button"
+      *ngIf="showRetryAction"
+      (click)="onRetry()"
+    >
+      {{ retryLabel }}
+      <ids-icon>reload_base</ids-icon>
+    </button>
+  </div>
+</section>

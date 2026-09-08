@@ -1,0 +1,26 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  margin: 2rem 0 2rem 0;
+  .header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  .footer-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+.progress-step {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}

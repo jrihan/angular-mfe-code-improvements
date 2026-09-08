@@ -1,0 +1,8 @@
+@import "@ids/tokens/varejo_beta/tokens.scss";
+@import "../_base-tokens.scss";
+@import "../_webcomponent-name.scss";
+
+#{$webcomponent-wrapper-name}.ids-theme-varejo_beta,
+.#{$webcomponent-name}.ids-theme-varejo_beta {
+    @include export-ids-tokens-as-css-vars;
+}

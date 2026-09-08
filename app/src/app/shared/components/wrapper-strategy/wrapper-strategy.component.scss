@@ -1,0 +1,15 @@
+@import "@angular/cdk/overlay-prebuilt.css";
+@import "@angular/cdk/a11y-prebuilt.css";
+@import "../../../../styles/fonts.scss";
+
+// Scoped CSS to prevent leakage - only apply IDS styles within our WebComponent wrapper
+.mf-plataformaresseguro-mfe {
+  @import "@ids/styles/scss/styles.scss";
+}
+
+// CSS variables for both shadow DOM (:host rules) and CDK overlays (.class rules)
+// All 32 segments with unique variables provided by individual segment files
+@import "../../../../styles/themes/_all-themes.scss";
+
+// CDK overlay isolation is handled by ThemeIsolationOverlayService
+// Individual segment CSS variables are provided by _all-themes.scss import above .mf-xpto ids-text

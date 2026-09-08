@@ -1,0 +1,47 @@
+.retry-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  min-height: 360px;
+  padding: 32px 24px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #d8d8d8;
+  border-radius: 16px;
+}
+
+.retry-state__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 999px;
+  background: #fff3e8;
+  color: #ec7000;
+}
+
+.retry-state__content {
+  max-width: 480px;
+}
+
+.retry-state__content h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.retry-state__content p {
+  margin: 0;
+  color: #56504c;
+  line-height: 24px;
+}
+
+.retry-state__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}

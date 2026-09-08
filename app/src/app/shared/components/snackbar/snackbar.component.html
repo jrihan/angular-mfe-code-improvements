@@ -1,0 +1,8 @@
+<ids-snackbar
+  [show]="show"
+  [variant]="variant === 'info' ? 'information' : variant"
+  [duration]="durationInSeconds"
+  (showChange)="onShowChange($event)"
+>
+  {{ message }}
+</ids-snackbar>

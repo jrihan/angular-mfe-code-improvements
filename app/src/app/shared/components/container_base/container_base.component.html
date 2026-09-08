@@ -1,0 +1,69 @@
+<div class="container-base" [ngClass]="containerClasses">
+  <div
+    class="header"
+    style="display: flex; align-items: center; justify-content: space-between"
+  >
+    <div style="display: flex; align-items: center; gap: 1rem">
+      <h2 class="title" *ngIf="title" style="margin: 0">
+        {{ title }}
+      </h2>
+      <span class="status status-done" *ngIf="showStatus && done">
+        {{ doneLabel }}
+      </span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.5rem">
+      <ids-form-selection *ngIf="showSwitcher" class="header-switch">
+        <input
+          type="checkbox"
+          idsSwitch
+          [checked]="switcherChecked"
+          (change)="switcherCheckedChange.emit($any($event.target).checked)"
+        />
+        {{ switcherLabel }}
+      </ids-form-selection>
+
+      <div *ngIf="showLeftHeader" class="right">
+        <button
+          idsMainButton
+          type="button"
+          variant="secondary"
+          (click)="onButtonClick()"
+        >
+          {{ buttonTitle }}
+          <ids-icon>{{ buttonIcon }}</ids-icon>
+        </button>
+
+        <button
+          *ngIf="showSecondButton"
+          idsMainButton
+          type="button"
+          variant="secondary"
+          (click)="onSecondButtonClick()"
+        >
+          {{ secondButtonTitle }}
+          <ids-icon>{{ secondButtonIcon }}</ids-icon>
+        </button>
+      </div>
+      <button
+        type="button"
+        (click)="toggleExpand()"
+        style="background: none; border: none; cursor: pointer; padding: 0"
+      >
+        <span
+          [style.transform]="expanded ? 'rotate(0deg)' : 'rotate(-180deg)'"
+          style="
+            display: inline-block;
+            transition: transform 0.2s;
+            font-size: 1.5em;
+          "
+        >
+          <ids-icon>arrow_down_base</ids-icon>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="content" *ngIf="expanded">
+    <ng-content></ng-content>
+  </div>
+</div>

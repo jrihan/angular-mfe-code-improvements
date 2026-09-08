@@ -1,0 +1,145 @@
+# ===========================================================
+#                       ️WARNING
+# ===========================================================
+# THIS FILE SHOULD NOT BE EDITED MANUALLY.
+# To modify the version or settings of a plugin, use:
+#   stk update plugin
+# To remove a plugin, use:
+#   stk remove plugin
+# To add a new feature to the project, use:
+#   stk apply plugin
+# ===========================================================
+
+schema-version: v2
+kind: manifest
+metadata:
+  name: plataformaresseguro-mfe
+  description: Portal que contem toda a parte de backoffice da nova plataforma de
+    Resseguro
+  stack-version-id: 01KHS3Q0ECH0H2PS6BJAFMGPAQ
+  stack: jornadas-frontend@3.2.0
+spec:
+  type: app
+  app-id: 01KKYG7T575RWNDKY0BWVFC5KQ
+  plugins:
+    - name: itau-corp/jornadas-frontend@3.2.0/integracao-api-rh@1.1.3
+      alias: integracao-api-rh-usuario
+      plugin-version-id: 01KAEQT8PXZPMBXV1QSYZ6M9EF
+      stack-version-id: 01KHS3Q0ECH0H2PS6BJAFMGPAQ
+      type: infra
+      inputs: {}
+      inputs-envs: {}
+      connections:
+        generates: []
+        requires: []
+      links:
+        generates: []
+    - name: itau-corp/jornadas-frontend@3.2.0/pipes-plugin-infra-iupipes@9.1.3
+      alias: pipes-plugin-infra-iupipes
+      plugin-version-id: 01KKHX8GPJET8TRXJHR7R9JB9M
+      stack-version-id: 01KHS3Q0ECH0H2PS6BJAFMGPAQ
+      type: infra
+      inputs: {}
+      inputs-envs: {}
+      connections:
+        generates: []
+        requires: []
+      links:
+        generates: []
+    - name: itau-corp/jornadas-frontend@3.2.0/infraestrutura-aws-s3-cloudfront@4.2.2
+      alias: infraestrutura-aws-s3-cloudfront
+      plugin-version-id: 01KBDW3AH61RZTJX9HQ79WB58F
+      stack-version-id: 01KHS3Q0ECH0H2PS6BJAFMGPAQ
+      type: infra
+      inputs:
+        has_id_solution: false
+        bucket_name: vo7-plataformaresseguro-mfe
+        additional_ids: true
+      inputs-envs:
+        cloudfront_id:
+          desenvolvimento: "E1NDM266C89IDO"
+          homologacao: "EZGWX2NEW3SX0"
+          producao: "EN7PVLOTD0B57"
+        additional_parameters:
+          desenvolvimento: false
+          homologacao: false
+          producao: false
+      connections:
+        generates:
+          - type: aws-s3-conn
+            selected: vo7-plataformaresseguro-mfe
+            alias: aws-s3-conn
+        requires: []
+      links:
+        generates: []
+    - name: itau-corp/jornadas-frontend@3.2.0/angular-mfe-base@23.2.0
+      alias: angular-mfe-base
+      plugin-version-id: 01KG7XZMC261Y680327C6TB3KQ
+      stack-version-id: 01KHS3Q0ECH0H2PS6BJAFMGPAQ
+      type: app
+      inputs:
+        cloudfront_mfe: true
+        angular_routing: false
+      inputs-envs:
+        semantic_version:
+          desenvolvimento: false
+          homologacao: true
+          producao: true
+      connections:
+        generates: []
+        requires: []
+      links:
+        generates: []
+    - name: itau-corp/jornadas-frontend@3.2.0/testes-e2e-angular-cypress@1.2.0
+      alias: angular-cypress
+      plugin-version-id: 01KAVQT9SXQ1G47RDGK2APXNHC
+      stack-version-id: 01KHS3Q0ECH0H2PS6BJAFMGPAQ
+      type: app
+      inputs: {}
+      inputs-envs: {}
+      connections:
+        generates: []
+        requires: []
+      links:
+        generates: []
+    - name: itau-corp/jornadas-frontend@3.2.0/angular-mfe-example@17.2.0
+      alias: mfe-example
+      plugin-version-id: 01KG7YDEFCCBVGX92JA8HA7K7W
+      stack-version-id: 01KHS3Q0ECH0H2PS6BJAFMGPAQ
+      type: app
+      inputs: {}
+      inputs-envs: {}
+      connections:
+        generates: []
+        requires: []
+      links:
+        generates: []
+  global-inputs:
+    user_owner_squad_functional: '987325905'
+    id_comunidade: C0168
+    descricao_comunidade: SEGUROS SOLUÇÕES
+    id_squad: S011064
+    descricao_squad: SQUAD DE RESSEGURO
+    descricao_comunidade_customizada: seguros-solucoes
+    language: "nodejs"
+    deployment: "s3"
+    s3_name: vo7-plataformaresseguro-mfe
+    aws_account_name: plataformaresseguro
+    aws_account_id_dev: '054854578098'
+    aws_account_id_hom: '772317732918'
+    aws_account_id_prod: '274859571344'
+    sigla_app: VO7-P1002
+    sigla: vo7
+    github_user: vtajmia_itau
+    racf: vtajmia
+    execution_id: 01KKYG7TF2CCX5J57R0M9XX95W
+    segments:
+      - varejo
+    project_community: seguros-solucoes
+    project_name: mf-plataformaresseguro-mfe
+    selector: mf-plataformaresseguro-mfe
+  global-computed-inputs:
+    language_version: '18'
+    builder_version: ''
+    namespace: ''
+  repository: https://github.com/itau-corp/itau-vo7-app-plataformaresseguro-mfe.git

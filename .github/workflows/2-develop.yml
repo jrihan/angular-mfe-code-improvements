@@ -1,0 +1,11 @@
+name: "2 - [DEV] Build & Deploy"
+
+on:
+  push:
+    branches:
+      - 'develop'
+
+jobs:
+  app:
+    uses: itau-corp/itau-up2-nested-reusable-nodejs-s3/.github/workflows/develop.yml@v2-stk-wk
+    secrets: inherit

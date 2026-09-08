@@ -1,0 +1,22 @@
+/* stylelint-disable */
+// Esse componente é estratégico com proposito de viabilizar o funcionamento do WebComponent de Maneira Desacoplada
+// Não coloque css aqui caso não tenha conhecimento de desacoplamento de WebComponent
+/* stylelint-enable */
+@use "sass:meta";
+
+@import "@ids/styles/css/styles.css";
+@import "@ids/tokens/varejo/tokens.css";
+@import "@angular/cdk/overlay-prebuilt.css";
+@import "@angular/cdk/a11y-prebuilt.css";
+
+.page-container {
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+footer {
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  color: var(--ids-color-text-secondary);
+}

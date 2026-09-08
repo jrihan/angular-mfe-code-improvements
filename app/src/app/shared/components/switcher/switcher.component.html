@@ -1,0 +1,7 @@
+<div class="switcher-container">
+  <label *ngIf="label">{{ label }}</label>
+
+  <div class="switch" [class.on]="checked" (click)="toggle()">
+    <div class="thumb"></div>
+  </div>
+</div>

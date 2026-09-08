@@ -1,15 +1,4 @@
-# mf-plataformaresseguro-mfe
-## StackSpot Action
-# itau-up2-template-nodejs-s3-stackspot
 
-Starter responsável por criar um Microfrontend base, capaz de gerar uma aplicação tanto para o cenário de web components, module federation ou webview.
-[Documentação](https://itau-corp.github.io/itau-up2-docs/jornadas/cloud-publica/aws/s3/npm/)## Jinja
-
-### Mais informações
-You can use jinja to make a template-data folder more dynamic.
-
-Para mais informações sobre o starter, [acesse a documentação](https://quickweb-dev.cloud.itau.com.br/docs/templates/feature-0/mfe-base)
-complete documentation of jinja: https://jinja.palletsprojects.com/en/3.0.x/templates/
 
 ### Example Inputs:
 - Resource: 

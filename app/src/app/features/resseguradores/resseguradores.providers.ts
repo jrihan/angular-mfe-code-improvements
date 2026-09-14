@@ -16,7 +16,7 @@ import { BuscarDadosCadastraisUseCaseImpl } from './application/usecases/buscar_
 // import { ResseguradoresDatasourceImpl } from './data/datasources/resseguradores.datasource.impl';
 import { BuscarInstituicoesFinanceirasUseCase } from './domain/usecases/buscar_instituicoes_financeiras.usecase';
 import { BuscarInstituicoesFinanceirasAppUsecaseImpl } from './application/usecases/buscar_instituicoes_financeiras.app.usecase.impl';
-import { ResseguradoresDatasourceImpl } from './data/datasources/resseguradores.datasource.impl';
+import { ResseguradoresDatasourceMock } from './data/datasources/resseguradores.datasource.mock';
 
 export const RESSEGURADORES_PROVIDERS: Provider[] = [
   // -----------------------------
@@ -24,7 +24,7 @@ export const RESSEGURADORES_PROVIDERS: Provider[] = [
   // -----------------------------
   {
     provide: ResseguradoresDatasource,
-    useClass: ResseguradoresDatasourceImpl,
+    useClass: ResseguradoresDatasourceMock,
   },
   // -----------------------------
   // Repository

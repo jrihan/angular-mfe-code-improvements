@@ -518,7 +518,21 @@
             <ng-container idsColumnDef="tipo_conta">
               <th idsHeaderCell *idsHeaderCellDef idsSort>Tipo da Conta</th>
               <td idsCell *idsCellDef="let row">
-                {{ obterNomeTipoConta(row.codigoTipoConta) }}
+                {{ obterNomeTipoConta(row.codigoTipoConta, row.isInternational) }}
+              </td>
+            </ng-container>
+
+            <ng-container idsColumnDef="iban">
+              <th idsHeaderCell *idsHeaderCellDef idsSort>IBAN</th>
+              <td idsCell *idsCellDef="let row">
+                {{ row.iban }}
+              </td>
+            </ng-container>
+
+            <ng-container idsColumnDef="swift">
+              <th idsHeaderCell *idsHeaderCellDef idsSort>SWIFT</th>
+              <td idsCell *idsCellDef="let row">
+                {{ row.swift }}
               </td>
             </ng-container>
 
@@ -583,12 +597,33 @@
         class="item-divider"
         style="margin-top: 24px"
       >
-        <h3 style="margin-top: 0; margin-bottom: 16px">
-          {{ editingContaIndex !== null ? "Editar Conta" : "Nova Conta" }}
-        </h3>
         <form [formGroup]="contaForm">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              margin-bottom: 16px;
+            "
+          >
+            <h3 style="margin: 0">
+              {{ editingContaIndex !== null ? "Editar Conta" : "Nova Conta" }}
+            </h3>
+            <ids-form-selection-group>
+              <ids-form-selection>
+                <input
+                  type="checkbox"
+                  idsSwitch
+                  formControlName="contaInternacional"
+                />
+                Conta Internacional
+              </ids-form-selection>
+            </ids-form-selection-group>
+          </div>
           <div class="horizontaly">
-            <ids-form-field label="Banco *">
+            <ids-form-field
+              [label]="contaForm.get('contaInternacional')?.value ? 'Banco' : 'Banco *'"
+            >
               <ids-select formControlName="banco">
                 <ids-option
                   *ngFor="let banco of instituicoes_financeiras?.data"
@@ -599,7 +634,9 @@
               </ids-select>
             </ids-form-field>
 
-            <ids-form-field label="Agência *">
+            <ids-form-field
+              [label]="contaForm.get('contaInternacional')?.value ? 'Agência' : 'Agência *'"
+            >
               <input
                 idsInput
                 formControlName="agencia"
@@ -608,7 +645,9 @@
               />
             </ids-form-field>
 
-            <ids-form-field label="Código Conta *">
+            <ids-form-field
+              [label]="contaForm.get('contaInternacional')?.value ? 'Código Conta' : 'Código Conta *'"
+            >
               <input
                 idsInput
                 formControlName="conta"
@@ -617,7 +656,9 @@
               />
             </ids-form-field>
 
-            <ids-form-field label="DAC *">
+            <ids-form-field
+              [label]="contaForm.get('contaInternacional')?.value ? 'DAC' : 'DAC *'"
+            >
               <input
                 idsInput
                 formControlName="dac"
@@ -626,7 +667,9 @@
               />
             </ids-form-field>
 
-            <ids-form-field label="Tipo da conta *">
+            <ids-form-field
+              [label]="contaForm.get('contaInternacional')?.value ? 'Tipo da conta' : 'Tipo da conta *'"
+            >
               <ids-select formControlName="tipo">
                 <ids-option
                   *ngFor="let tipo of tiposConta"
@@ -636,6 +679,36 @@
                 </ids-option>
               </ids-select>
             </ids-form-field>
+          </div>
+          <div class="horizontaly">
+
+
+          <ids-form-field
+            [label]="contaForm.get('contaInternacional')?.value ? 'IBAN *' : 'IBAN'"
+            [errorMessage]="getIbanErrorMessage()"
+          >
+            <input
+              idsInput
+              minlength="15"
+              formControlName="iban"
+              (input)="onIbanInput($event)"
+            />
+          </ids-form-field>
+
+          <ids-form-field
+            [label]="contaForm.get('contaInternacional')?.value ? 'Swift *' : 'Swift'"
+            [errorMessage]="getSwiftErrorMessage()"
+          >
+            <input
+              idsInput
+              minlength="8"
+              maxlength="11"
+              formControlName="swift"
+              (input)="onSwiftInput($event)"
+            />
+          </ids-form-field>
+
+
           </div>
 
           <div

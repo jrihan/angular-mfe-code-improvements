@@ -24,6 +24,8 @@ import {
   IdsPaginationModule,
   IdsLoadingModule,
   IdsInputSearchModule,
+  IdsSwitchModule,
+  IdsFormSelectionModule,
 } from '@ids/angular';
 import { NavigationService } from 'src/app/shared/navigation.service';
 import { NavigationRoute } from 'src/app/shared/navigation-routes';
@@ -60,6 +62,11 @@ import {
   COUNTRY_CODE_LABELS,
 } from 'src/app/shared/domain/enum/country_code.enum';
 import { CNPJ } from 'src/app/shared/presentation/validators/cnpj.validator';
+import { BankValidators } from 'src/app/shared/presentation/validators/bank.validator';
+import {
+  formatIban,
+  formatSwift,
+} from 'src/app/shared/presentation/masks/bank.masks';
 import { BuscarInstituicoesFinanceirasUseCase } from 'src/app/features/resseguradores/domain/usecases/buscar_instituicoes_financeiras.usecase';
 
 export type ScreenMode = 'criar' | 'editar' | 'visualizar';
@@ -86,6 +93,8 @@ type DetailLoadState = 'content' | 'not-found' | 'error';
     IdsPaginationModule,
     IdsLoadingModule,
     IdsInputSearchModule,
+    IdsSwitchModule,
+    IdsFormSelectionModule,
   ],
 })
 export class DetalheResseguradorComponent implements OnInit {
@@ -743,6 +752,44 @@ export class DetalheResseguradorComponent implements OnInit {
     this.contaForm.get('dac')?.setValue(clean, { emitEvent: false });
   }
 
+  onIbanInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.contaForm
+      .get('iban')
+      ?.setValue(formatIban(input.value), { emitEvent: false });
+  }
+
+  onSwiftInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.contaForm
+      .get('swift')
+      ?.setValue(formatSwift(input.value), { emitEvent: false });
+  }
+
+  getIbanErrorMessage(): string {
+    const control = this.contaForm.get('iban');
+    if (!control?.touched || !control.invalid) return '';
+    if (control.hasError('required')) {
+      return 'O preenchimento do campo é obrigatório';
+    }
+    if (control.hasError('invalidIban')) {
+      return 'Número do IBAN inválido';
+    }
+    return '';
+  }
+
+  getSwiftErrorMessage(): string {
+    const control = this.contaForm.get('swift');
+    if (!control?.touched || !control.invalid) return '';
+    if (control.hasError('required')) {
+      return 'O preenchimento do campo é obrigatório';
+    }
+    if (control.hasError('invalidSwift')) {
+      return 'Número do Swift inválido';
+    }
+    return '';
+  }
+
   private inicializarFormulario() {
     this.searchForm = this.fb.group(
       {
@@ -797,6 +844,64 @@ export class DetalheResseguradorComponent implements OnInit {
         [Validators.required, Validators.minLength(1), Validators.maxLength(2)],
       ],
       tipo: ['', Validators.required],
+      contaInternacional: [false],
+      iban: [''],
+      swift: [''],
+    });
+
+    this.contaForm
+      .get('contaInternacional')
+      ?.valueChanges.subscribe((isInternational: boolean) => {
+        this.updateContaValidators(isInternational);
+      });
+    this.updateContaValidators(false);
+  }
+
+  private updateContaValidators(isInternational: boolean): void {
+    const nationalControls = ['banco', 'agencia', 'conta', 'dac', 'tipo'];
+    const internationalControls = ['iban', 'swift'];
+
+    nationalControls.forEach((controlName) => {
+      const control = this.contaForm.get(controlName);
+      if (!control) return;
+
+      if (isInternational) {
+        control.clearValidators();
+        control.disable({ emitEvent: false });
+      } else {
+        control.enable({ emitEvent: false });
+        control.setValidators(
+          controlName === 'banco' || controlName === 'tipo'
+            ? [Validators.required]
+            : [
+                Validators.required,
+                ...(controlName === 'agencia'
+                  ? [Validators.maxLength(4)]
+                  : controlName === 'conta'
+                    ? [Validators.minLength(1), Validators.maxLength(11)]
+                    : [Validators.minLength(1), Validators.maxLength(2)]),
+              ]
+        );
+      }
+      control.updateValueAndValidity({ emitEvent: false });
+    });
+
+    internationalControls.forEach((controlName) => {
+      const control = this.contaForm.get(controlName);
+      if (!control) return;
+
+      if (isInternational) {
+        control.enable({ emitEvent: false });
+        control.setValidators(
+          controlName === 'iban'
+            ? [Validators.required, BankValidators.ibanValidator()]
+            : [Validators.required, BankValidators.swiftValidator()]
+        );
+      } else {
+        control.clearValidators();
+        control.disable({ emitEvent: false });
+      }
+      control.updateValueAndValidity({ emitEvent: false });
     });
   }
 
@@ -809,6 +914,8 @@ export class DetalheResseguradorComponent implements OnInit {
         'tipo_conta',
         'codigo_conta',
         'dac',
+        'iban',
+        'swift',
       ];
     }
     return [
@@ -818,6 +925,8 @@ export class DetalheResseguradorComponent implements OnInit {
       'tipo_conta',
       'codigo_conta',
       'dac',
+      'iban',
+      'swift',
       'acao',
     ];
   }
@@ -840,13 +949,14 @@ export class DetalheResseguradorComponent implements OnInit {
 
   checkRow(row: BankAccountEntity): void {
     this.dadosConta = this.dadosConta.map((c) => {
-      const isSelected = c.codigoConta === row.codigoConta;
+      const isSelected = c === row;
       return c.copyWith({ contaSelecionada: isSelected });
     });
     this.cdr.detectChanges();
   }
 
-  obterNomeTipoConta(codigo: string): string {
+  obterNomeTipoConta(codigo: string, isInternational = false): string {
+    if (isInternational) return 'Conta Internacional';
     if (!codigo) return '';
     const clean = codigo.trim().toUpperCase();
 
@@ -889,6 +999,9 @@ export class DetalheResseguradorComponent implements OnInit {
       conta: conta.codigoConta,
       dac: conta.dac,
       tipo: conta.codigoTipoConta,
+      contaInternacional: conta.isInternational,
+      iban: conta.iban || '',
+      swift: conta.swift || '',
     });
     this.showContaForm = true;
     this.cdr.detectChanges();
@@ -915,7 +1028,9 @@ export class DetalheResseguradorComponent implements OnInit {
       codigoAgencia: formValue.agencia,
       codigoConta: formValue.conta,
       dac: formValue.dac,
-      codigoTipoConta: formValue.tipo,
+      codigoTipoConta: formValue.tipo || BankAccountTypeEnum.CONTA_CORRENTE,
+      iban: formValue.iban?.trim() || undefined,
+      swift: formValue.swift || undefined,
     });
 
     if (this.editingContaIndex !== null) {
@@ -1203,9 +1318,11 @@ export class DetalheResseguradorComponent implements OnInit {
         codigoBanco: selecionada?.codigoBanco || '',
         codigoAgencia: selecionada?.codigoAgencia || '',
         codigoTipoConta:
-          selecionada?.codigoTipoConta || BankAccountTypeEnum.CONTA_CORRENTE,
+          selecionada?.codigoTipoConta,
         codigoConta: selecionada?.codigoConta || '',
         dac: selecionada?.dac || '',
+        iban: selecionada?.iban,
+        swift: selecionada?.swift,
       });
 
       // Payload final

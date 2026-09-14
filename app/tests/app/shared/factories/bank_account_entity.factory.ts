@@ -4,7 +4,8 @@ import { BankAccountTypeEnum } from '../../../../src/app/shared/domain/enum/bank
 
 export class BankAccountEntityFactory {
   static create(
-    override?: Partial<Omit<BankAccountEntity, 'copyWith'>>
+    override?: Partial<Omit<BankAccountEntity, 'copyWith' | 'isInternational'>>,
+    isInternational = false,
   ): BankAccountEntity {
     return new BankAccountEntity({
       contaSelecionada: override?.hasOwnProperty('contaSelecionada')
@@ -12,32 +13,56 @@ export class BankAccountEntityFactory {
         : faker.datatype.boolean(),
       codigoBanco:
         override?.codigoBanco ??
-        faker.helpers.arrayElement(['341', '001', '033', '104']),
-      codigoAgencia: override?.codigoAgencia ?? faker.string.numeric(4),
+        (isInternational
+          ? ''
+          : faker.helpers.arrayElement(['341', '001', '033', '104'])),
+      codigoAgencia:
+        override?.codigoAgencia ?? (isInternational ? '' : faker.string.numeric(4)),
       codigoTipoConta:
         override?.codigoTipoConta ??
-        faker.helpers.arrayElement([
-          BankAccountTypeEnum.CONTA_CORRENTE,
-          BankAccountTypeEnum.CONTA_POUPANCA,
-          BankAccountTypeEnum.CONTA_PAGAMENTO,
-          BankAccountTypeEnum.CONTA_INVESTIMENTO,
-        ]),
+        (isInternational
+          ? BankAccountTypeEnum.CONTA_CORRENTE
+          : faker.helpers.arrayElement([
+              BankAccountTypeEnum.CONTA_CORRENTE,
+              BankAccountTypeEnum.CONTA_POUPANCA,
+              BankAccountTypeEnum.CONTA_PAGAMENTO,
+              BankAccountTypeEnum.CONTA_INVESTIMENTO,
+            ])),
       codigoConta:
         override?.codigoConta ??
-        faker.string.numeric({ length: { min: 5, max: 10 } }),
-      dac: override?.dac ?? faker.string.numeric(1),
+        (isInternational
+          ? ''
+          : faker.string.numeric({ length: { min: 5, max: 10 } })),
+      dac: override?.dac ?? (isInternational ? '' : faker.string.numeric(1)),
+      iban:
+        override?.iban ??
+        (isInternational ? 'PT50000201231234567890154' : undefined),
+      swift:
+        override?.swift ?? (isInternational ? 'DEUTDEFF500' : undefined),
     });
   }
 
   static createList(
     count = 2,
-    override?: Partial<Omit<BankAccountEntity, 'copyWith'>>
+    isInternationalOrOverride:
+      | boolean
+      | Partial<Omit<BankAccountEntity, 'copyWith' | 'isInternational'>> = false,
+    override?: Partial<Omit<BankAccountEntity, 'copyWith' | 'isInternational'>>
   ): BankAccountEntity[] {
+    const isInternational =
+      typeof isInternationalOrOverride === 'boolean'
+        ? isInternationalOrOverride
+        : false;
+    const resolvedOverride =
+      typeof isInternationalOrOverride === 'boolean'
+        ? override
+        : isInternationalOrOverride;
+
     return Array.from({ length: count }, (_, index) =>
       this.create({
         contaSelecionada: index === 0,
-        ...override,
-      })
+        ...resolvedOverride,
+      }, isInternational && faker.datatype.boolean())
     );
   }
 }

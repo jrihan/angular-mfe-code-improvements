@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ContainerBaseComponent } from '../../../../../src/app/shared/components/container_base/container_base.component';
 import { By } from '@angular/platform-browser';
-import { SwitcherComponent } from '../../../../../src/app/shared/components/switcher/switcher.component';
 
 describe('ContainerBaseComponent', () => {
   let component: ContainerBaseComponent;
@@ -9,7 +8,7 @@ describe('ContainerBaseComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContainerBaseComponent, SwitcherComponent],
+      imports: [ContainerBaseComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ContainerBaseComponent);
@@ -70,9 +69,7 @@ describe('ContainerBaseComponent', () => {
     component.showLeftHeader = true;
     component.showSwitcher = true;
     fixture.detectChanges();
-    const switcher = fixture.debugElement.query(
-      By.directive(SwitcherComponent)
-    );
+    const switcher = fixture.debugElement.query(By.css('input[idsSwitch]'));
     expect(switcher).toBeTruthy();
   });
 

@@ -13,16 +13,17 @@ export class BankAccountMapper {
       ),
       codigoConta: dto?.codigo_conta || '',
       dac: dto?.dac || '',
-      iban: dto?.iban,
-      swift: dto?.swift,
+      iban: dto?.codigo_iban,
+      swift: dto?.codigo_swift,
     });
   }
 
   static toDto(entity: BankAccountEntity | null | undefined): BankAccountDto {
     if (entity?.isInternational) {
       return {
-        iban: entity.iban,
-        swift: entity.swift,
+        codigo_iban: entity.iban,
+        codigo_swift: entity.swift,
+        conta_internacional: entity.isInternational,
       };
     }
 

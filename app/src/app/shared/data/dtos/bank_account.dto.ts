@@ -6,6 +6,7 @@ export interface BankAccountDto {
   tipo_conta?: string;
   codigo_conta?: string;
   dac?: string;
-  iban?: string;
-  swift?: string;
+  codigo_iban?: string;
+  codigo_swift?: string;
+  conta_internacional?: boolean;
 }

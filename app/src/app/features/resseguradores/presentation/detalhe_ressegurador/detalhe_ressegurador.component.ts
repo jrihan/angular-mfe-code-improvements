@@ -1023,7 +1023,7 @@ export class DetalheResseguradorComponent implements OnInit {
       contaSelecionada:
         this.editingContaIndex !== null
           ? this.dadosConta[this.editingContaIndex].contaSelecionada
-          : this.dadosConta.length === 0, // seleciona automaticamente se for a primeira
+          : this.dadosConta.length === 0,
       codigoBanco: formValue.banco,
       codigoAgencia: formValue.agencia,
       codigoConta: formValue.conta,

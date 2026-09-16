@@ -2,14 +2,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Angular: debug dev",
+      "name": "Angular: debug local",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/app",
       "runtimeExecutable": "npm",
       "runtimeArgs": [
         "run",
-        "start:dev"
+        "start:local"
       ],
       "console": "integratedTerminal",
       "skipFiles": [

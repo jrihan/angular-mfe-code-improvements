@@ -823,6 +823,36 @@ describe('DetalheResseguradorComponent', () => {
       expect(component.dadosConta[0].contaSelecionada).toBe(false);
       expect(component.dadosConta[1].contaSelecionada).toBe(true);
     });
+
+    it('deve selecionar somente a conta internacional clicada', () => {
+      component.dadosConta = [
+        new BankAccountEntity({
+          contaSelecionada: false,
+          codigoBanco: '',
+          codigoAgencia: '',
+          codigoTipoConta: BankAccountTypeEnum.CONTA_CORRENTE,
+          codigoConta: '',
+          dac: '',
+          iban: 'PT50000201231234567890154',
+          swift: 'DEUTDEFF500',
+        }),
+        new BankAccountEntity({
+          contaSelecionada: false,
+          codigoBanco: '',
+          codigoAgencia: '',
+          codigoTipoConta: BankAccountTypeEnum.CONTA_CORRENTE,
+          codigoConta: '',
+          dac: '',
+          iban: 'PT50000201231234567890154',
+          swift: 'BOFAUS3NXXX',
+        }),
+      ];
+
+      component.checkRow(component.dadosConta[1]);
+
+      expect(component.dadosConta[0].contaSelecionada).toBe(false);
+      expect(component.dadosConta[1].contaSelecionada).toBe(true);
+    });
   });
 
   describe('obterNomeTipoConta', () => {
@@ -844,6 +874,15 @@ describe('DetalheResseguradorComponent', () => {
 
     it('deve retornar o código original quando desconhecido', () => {
       expect(component.obterNomeTipoConta('XYZ')).toBe('XYZ');
+    });
+
+    it('deve identificar conta internacional pelo getter da entidade', () => {
+      expect(
+        component.obterNomeTipoConta(
+          BankAccountTypeEnum.CONTA_CORRENTE,
+          true
+        )
+      ).toBe('Conta Internacional');
     });
   });
 
@@ -946,6 +985,68 @@ describe('DetalheResseguradorComponent', () => {
       expect(component.dadosConta.length).toBe(1);
       expect(component.dadosConta[0].codigoBanco).toBe('341');
       expect(component.dadosConta[0].contaSelecionada).toBe(true);
+    });
+
+    it('deve salvar conta internacional com IBAN e SWIFT', () => {
+      component.contaForm.patchValue({
+        contaInternacional: true,
+        swift: 'DEUTDEFF500',
+      });
+      component.onIbanInput(inputEvent('PT50000201231234567890154'));
+
+      component.salvarConta();
+
+      expect(component.dadosConta).toHaveLength(1);
+      expect(component.dadosConta[0].isInternational).toBe(true);
+      expect(component.dadosConta[0].iban).toBe(
+        'PT50 0002 0123 1234 5678 9015 4'
+      );
+      expect(component.dadosConta[0].swift).toBe('DEUTDEFF500');
+      expect(component.dadosConta[0].codigoBanco).toBeUndefined();
+      expect(component.dadosConta[0].codigoConta).toBeUndefined();
+    });
+
+    it('deve alternar validators e habilitação entre conta nacional e internacional', () => {
+      const contaInternacional = component.contaForm.get('contaInternacional');
+      const banco = component.contaForm.get('banco');
+      const iban = component.contaForm.get('iban');
+      const swift = component.contaForm.get('swift');
+
+      expect(banco?.enabled).toBe(true);
+      expect(iban?.disabled).toBe(true);
+
+      contaInternacional?.setValue(true);
+
+      expect(banco?.disabled).toBe(true);
+      expect(iban?.enabled).toBe(true);
+      expect(swift?.enabled).toBe(true);
+      expect(iban?.hasError('required')).toBe(true);
+      expect(swift?.hasError('required')).toBe(true);
+
+      contaInternacional?.setValue(false);
+
+      expect(banco?.enabled).toBe(true);
+      expect(banco?.hasError('required')).toBe(true);
+      expect(iban?.disabled).toBe(true);
+      expect(swift?.disabled).toBe(true);
+    });
+
+    it('deve aplicar máscaras e mensagens de validação para IBAN e SWIFT', () => {
+      component.contaForm.get('contaInternacional')?.setValue(true);
+
+      component.onIbanInput(inputEvent('pt50 0002 0123 1234 5678 9015 4'));
+      component.onSwiftInput(inputEvent('deut-deff500'));
+
+      expect(component.contaForm.get('iban')?.value).toBe(
+        'PT50 0002 0123 1234 5678 9015 4'
+      );
+      expect(component.contaForm.get('swift')?.value).toBe('DEUTDEFF500');
+
+      component.contaForm.get('iban')?.setValue('PT00INVALID');
+      component.contaForm.get('iban')?.markAsTouched();
+      component.contaForm.get('iban')?.updateValueAndValidity();
+
+      expect(component.getIbanErrorMessage()).toBe('Número do IBAN inválido');
     });
 
     it('deve cancelar edição de conta', () => {

@@ -5,7 +5,7 @@ import { BankAccountDto } from '../dtos/bank_account.dto';
 export class BankAccountMapper {
   static toEntity(dto: BankAccountDto | null | undefined): BankAccountEntity {
     return new BankAccountEntity({
-      contaSelecionada: dto?.conta_selecionada,
+      contaSelecionada: dto?.conta_selecionada || false,
       codigoBanco: dto?.codigo_banco || '',
       codigoAgencia: dto?.codigo_agencia || '',
       codigoTipoConta: BankAccountMapper.parseCodigoTipoConta(
@@ -13,12 +13,24 @@ export class BankAccountMapper {
       ),
       codigoConta: dto?.codigo_conta || '',
       dac: dto?.dac || '',
+      iban: dto?.codigo_iban,
+      swift: dto?.codigo_swift,
     });
   }
 
   static toDto(entity: BankAccountEntity | null | undefined): BankAccountDto {
+    if (entity?.isInternational) {
+      return {
+        codigo_iban: entity.iban,
+        codigo_swift: entity.swift,
+        conta_internacional: entity.isInternational,
+      };
+    }
+
     return {
-      conta_selecionada: entity?.contaSelecionada,
+      conta_selecionada: entity
+        ? entity.contaSelecionada || false
+        : undefined,
       codigo_banco: entity?.codigoBanco || '',
       codigo_agencia: entity?.codigoAgencia || '',
       codigo_tipo_conta:
